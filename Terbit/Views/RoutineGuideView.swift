@@ -147,6 +147,7 @@ struct ActivityGuideView: View {
             VStack {
                 Text("\(routineStore.selectedActivities[currentActivityIndex].activity.instructions[currentStepIndex])...")
                     .font(.title3)
+                    .multilineTextAlignment(.center)
                 
                 ProgressView(value: Double(Double(4-timeRemaining)/Double(4)))
                     .padding(.top, 16)

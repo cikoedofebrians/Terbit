@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BF3D79012D93EFC000113E00 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = BF3D78FF2D93EFBB00113E00 /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		BF3D78FF2D93EFBB00113E00 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		BF7124A12D91230D00F3B913 /* Terbit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Terbit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +37,7 @@
 		BF7124982D91230D00F3B913 = {
 			isa = PBXGroup;
 			children = (
+				BF3D78FF2D93EFBB00113E00 /* .gitignore */,
 				BF3D78BD2D932C8B00113E00 /* Terbit */,
 				BF7124A22D91230D00F3B913 /* Products */,
 			);
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF3D79012D93EFC000113E00 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

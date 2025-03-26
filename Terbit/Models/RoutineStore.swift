@@ -35,4 +35,8 @@ class RoutineStore {
     func replaceActivity(at index: Int, with activity: ActivityRoutine) {
         selectedActivities[index] = activity
     }
+    
+    func getTotalDuration() -> Int {
+        return selectedActivities.reduce(0) { $0 + $1.activity.duration }
+    }
 }

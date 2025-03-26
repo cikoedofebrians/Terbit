@@ -7,19 +7,35 @@
 
 import SwiftUI
 
-enum ActivityDetailsAction : Hashable {
-    case add
-    case replace(Int)
+enum ActivityDetailsType: Hashable {
+    case viewOnly(MorningActivity)
+    case add(MorningActivity)
+    case replace(MorningActivity, Int)
+    
+    var activity: MorningActivity {
+        switch self {
+        case    .viewOnly(let activity),
+                .add(let activity),
+                .replace(let activity, _):
+            return activity
+        }
+    }
+    
 }
 
 struct ActivityDetailsView: View {
-    let activity: MorningActivity
-    let action: ActivityDetailsAction?
+    let activityDetailsType: ActivityDetailsType
+    @Environment(RoutineStore.self) var routineStore
+    @Environment(AppRouter.self) var appRouter
+    
+    var activity: MorningActivity {
+        activityDetailsType.activity
+    }
     
     var body: some View {
         ScrollView {
             VStack (alignment: .leading, spacing: 0){
-        
+                
                 Rectangle()
                     .frame(height: 240)
                     .foregroundStyle(.gray)
@@ -35,24 +51,45 @@ struct ActivityDetailsView: View {
                             .font(.title)
                             .bold()
                         Spacer()
-                        if action != nil {
+                        
+                        switch activityDetailsType {
+                        case .add:
                             Button {
-                                
+                                appRouter.popUntil(.editRoutineView)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                                    withAnimation {
+                                        routineStore.selectedActivities.append(
+                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
+                                        )
+                                    }
+                                }
                             } label: {
-                                if action == ActivityDetailsAction.add {
-                                    Text("Add")
-                                }
-                                if action == ActivityDetailsAction.replace(0) {
-                                    Text("Replace")
-                                }
+                                Text("Add")
                             }
                             .buttonBorderShape(.capsule)
                             .buttonStyle(.borderedProminent)
-                        }
-                     
+                            .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
 
+                        case .replace(_, let index):
+                            Button {
+                                appRouter.popUntil(.editRoutineView)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                                    withAnimation {
+                                        routineStore.selectedActivities[index] =
+                                            ActivityRoutine(activity: activity, index: index)
+                                    }
+                                }
+                            } label: {
+                                Text("Replace")
+                            }
+                            .buttonBorderShape(.capsule)
+                            .buttonStyle(.borderedProminent)
+                            .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
+                        case .viewOnly(_):
+                            EmptyView()
+                        }
                     }
-                 
+                    
                     Text(activity.description)
                         .font(.body)
                         .foregroundStyle(.secondary)
@@ -68,11 +105,7 @@ struct ActivityDetailsView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
-
             }
-            
-            
-            
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(activity.name)
@@ -82,7 +115,9 @@ struct ActivityDetailsView: View {
 
 #Preview {
     NavigationStack {
-        ActivityDetailsView(activity: constantMorningRoutine[1], action: nil)
+        ActivityDetailsView(activityDetailsType: .add(constantMorningRoutine[1]))
+            .environment(RoutineStore())
+            .environment(AppRouter())
     }
     
 }

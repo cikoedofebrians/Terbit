@@ -16,6 +16,8 @@ struct ActivityList: View {
     let activityListType: ActivityListType
     
     @Environment(AppRouter.self) var appRouter
+    @Environment(RoutineStore.self) var routineStore
+    
     var body: some View {
         List {
             ForEach(constantMorningRoutine, id: \.self) { activity in
@@ -42,18 +44,36 @@ struct ActivityList: View {
                         }
                         Spacer()
                         Button {
+                            appRouter.popUntil(.editRoutineView)
                             
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                                switch activityListType {
+                                case .add:
+                                    withAnimation {
+                                        routineStore.selectedActivities.append(
+                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
+                                        )
+                                    }
+                                case .replace(let index):
+                                    withAnimation {
+                                        routineStore.selectedActivities[index] =
+                                        ActivityRoutine(activity: activity, index: index)
+                                    }
+                                    
+                                }
+                            }
                         } label: {
                             Text(activityListType == ActivityListType.add ? "Add" : "Replace" )
                         }
+                        .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
                         .buttonStyle(.borderedProminent)
                         .buttonBorderShape(.capsule)
                         .tint(.accentColor)
-
+                        
                     }
                 }
                 .tint(.primary)
-
+                
             }
         }
         .navigationTitle("Activity List")
@@ -64,5 +84,6 @@ struct ActivityList: View {
     NavigationStack {
         ActivityList(activityListType: .add)
             .environment(AppRouter())
+            .environment(RoutineStore())
     }
 }

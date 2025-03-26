@@ -7,19 +7,7 @@
 
 import Foundation
 import Observation
-
-enum TerbitScreenEnum: Hashable {
-    case editRoutineView
-    case activityDetailsView(ActivityDetailsType)
-    case selectDayView
-    case activityListView(ActivityListType)
-}
-
-enum ActivityDetailsType: Hashable {
-    case viewOnly(MorningActivity)
-    case add(MorningActivity)
-    case replace(MorningActivity, Int)
-}
+import SwiftUI
 
 @Observable
 class AppRouter {
@@ -33,5 +21,15 @@ class AppRouter {
         if (path.count > 1) {
             path.removeLast()
         }
+    }
+    
+    func popUntil(_ screen: TerbitScreenEnum) {
+        while (path.last != screen) {
+            path.removeLast()
+        }
+    }
+    
+    func popToRoot() {
+        path.removeAll()
     }
 }

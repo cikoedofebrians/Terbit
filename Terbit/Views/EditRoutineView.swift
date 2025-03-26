@@ -14,7 +14,7 @@ struct EditRoutineView: View {
     
     var body: some View {
         Form {
-            ForEach(Array(routineStore.selectedActivities.enumerated()), id: \.0) { idx, routineActivity in
+            ForEach(Array(routineStore.selectedActivities.enumerated()), id: \.1) { idx, routineActivity in
                 Button {
                     appRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
                 } label: {
@@ -38,15 +38,19 @@ struct EditRoutineView: View {
                 }
                 .swipeActions(edge: .trailing) {
                     Button {
-                        appRouter.push(.activityListView(.replace(1)))
+                        appRouter.push(.activityListView(.replace(idx)))
                     } label: {
                         Image(systemName: "arrow.left.arrow.right")
                     }
                     .tint(.green)
                     
-                    Button {
+                    Button (role: .destructive){
                         withAnimation {
-                            routineStore.removeActivityAt(index: idx)
+                            if let index = routineStore.selectedActivities.firstIndex(where: { $0.activity.id == routineActivity.activity.id }) {
+                                routineStore.removeActivityAt(index: index)
+                                print(index)
+                            }
+                            
                         }
                     } label: {
                         Image(systemName: "trash.fill")
@@ -55,9 +59,12 @@ struct EditRoutineView: View {
                     
                     
                 }
-                
             }
-           
+            .onMove { from, to in
+                print(from)
+                print(to)
+            }
+            
         }
         .navigationTitle("Manage Routine")
         .toolbar {

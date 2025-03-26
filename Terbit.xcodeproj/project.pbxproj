@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		BF7124A32D91230D00F3B913 /* Terbit */ = {
+		BF3D78BD2D932C8B00113E00 /* Terbit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Terbit;
 			sourceTree = "<group>";
@@ -32,7 +32,7 @@
 		BF7124982D91230D00F3B913 = {
 			isa = PBXGroup;
 			children = (
-				BF7124A32D91230D00F3B913 /* Terbit */,
+				BF3D78BD2D932C8B00113E00 /* Terbit */,
 				BF7124A22D91230D00F3B913 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,7 +61,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				BF7124A32D91230D00F3B913 /* Terbit */,
+				BF3D78BD2D932C8B00113E00 /* Terbit */,
 			);
 			name = Terbit;
 			packageProductDependencies = (

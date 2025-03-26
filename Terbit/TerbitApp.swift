@@ -43,17 +43,13 @@ struct TerbitApp: App {
                             SelectDayView()
                         case .editRoutineView:
                             EditRoutineView()
+                        case .routineGuideView:
+                            RoutineGuideView()
                         case .activityDetailsView(let activityDetailsType):
-                            switch activityDetailsType {
-                            case .add(let activity):
-                                ActivityDetailsView(activity: activity, action: nil)
-                            case .viewOnly(let activity):
-                                ActivityDetailsView(activity: activity, action: ActivityDetailsAction.add)
-                            case .replace(let activity, let index):
-                                ActivityDetailsView(activity: activity, action: ActivityDetailsAction.replace(0))
-                            }
+                            ActivityDetailsView(activityDetailsType: activityDetailsType)
+                        case .routineGuideCompleteView:
+                            RoutineGuideCompleteView()
                         }
-                    
                     }
                 
             }

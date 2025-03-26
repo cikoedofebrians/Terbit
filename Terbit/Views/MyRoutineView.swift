@@ -48,7 +48,7 @@ struct MyRoutineView: View {
                     Spacer()
                     HStack {
                         Image(systemName: "timer")
-                        Text("8 mins")
+                        Text("\(routineStore.getTotalDuration()) min")
                     }
                     .foregroundStyle(.secondary)
                 }
@@ -83,10 +83,11 @@ struct MyRoutineView: View {
             }
             Section ("ACTIONS") {
                 Button {
-                    print("acumalaka")
+                    appRouter.push(.routineGuideView)
                 } label: {
                     Text("Start")
                 }
+                .disabled(routineStore.selectedActivities.isEmpty)
             }
         }
         .navigationTitle("My Routine")

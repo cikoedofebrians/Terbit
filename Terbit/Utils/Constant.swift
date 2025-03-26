@@ -5,8 +5,6 @@
 //  Created by Ciko Edo Febrian on 25/03/25.
 //
 
-
-
 let constantDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 let constantMorningRoutine: [MorningActivity] = [

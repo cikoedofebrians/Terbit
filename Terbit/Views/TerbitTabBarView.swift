@@ -17,7 +17,7 @@ struct TerbitTabBarView: View {
             }
             Tab("History", systemImage: "clock") {
                 NavigationStack {
-                    Text("History Page")
+                    HistoryListView()
                 }
             }
         }
@@ -27,5 +27,6 @@ struct TerbitTabBarView: View {
 #Preview {
     TerbitTabBarView()
         .environment(AppRouter())
+        .environment(RoutineStore())
     
 }

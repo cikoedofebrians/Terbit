@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct HistoryDetailsView: View {
+    @State var durationPerActivity: Int = 3
+    @State var numberOfActivity: Int = 4
+
+    
     var body: some View {
         List {
             // Section for activities
-            Section("mon, 26/3/2025") {
-                ForEach(0..<5) { _ in
+            Section(header :
+                Text("mon, 26/3/2025")
+                .font(.subheadline)
+            ) {
+                ForEach(Array(0..<numberOfActivity), id: \.self) { _ in
                     HStack {
                         
                         // Icon
@@ -20,8 +27,8 @@ struct HistoryDetailsView: View {
                         
                         // Name and Duration
                         VStack (alignment: .leading){
-                            Text("Halo")
-                            Text("2 mins")
+                            Text("Activity Name")
+                            Text("\(durationPerActivity) mins")
                         }
                         .padding(.leading)
                         
@@ -40,7 +47,9 @@ struct HistoryDetailsView: View {
                 Text("INFORMATION")
                 .font(.subheadline)
                 .foregroundStyle(.primary)
+                
             ) {
+                
                 // Status
                 HStack {
                     Image(systemName: "checkmark.circle.fill")
@@ -53,6 +62,7 @@ struct HistoryDetailsView: View {
                     Spacer()
                     Text("Completed")
                 }
+                
                     
                 // Time
                 HStack {
@@ -77,7 +87,7 @@ struct HistoryDetailsView: View {
                     .padding(.leading)
                     
                     Spacer()
-                    Text("10 mins")
+                    Text("\(durationPerActivity * numberOfActivity) mins")
                     
                 }
             }
@@ -85,7 +95,7 @@ struct HistoryDetailsView: View {
             
         }
         
-        .navigationTitle("History")
+        .navigationTitle("Activities")
         
     }
 }

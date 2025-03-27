@@ -104,6 +104,6 @@ struct HistoryDetailsView: View {
     NavigationStack {
         HistoryDetailsView()
             .environment(RoutineStore())
-            .environment(AppRouter())
+            .environment(MyRoutineRouter())
     }
 }

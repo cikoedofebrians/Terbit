@@ -9,14 +9,14 @@ import SwiftUI
 
 struct EditRoutineView: View {
     
-    @Environment(AppRouter.self) var appRouter
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
     var body: some View {
         Form {
             ForEach(Array(routineStore.selectedActivities.enumerated()), id: \.1) { idx, routineActivity in
                 Button {
-                    appRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
+                    myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
                 } label: {
                     HStack (spacing: 16){
                         Rectangle()
@@ -38,7 +38,7 @@ struct EditRoutineView: View {
                 }
                 .swipeActions(edge: .trailing) {
                     Button {
-                        appRouter.push(.activityListView(.replace(idx)))
+                        myRoutineRouter.push(.activityListView(.replace(idx)))
                     } label: {
                         Image(systemName: "arrow.left.arrow.right")
                     }
@@ -70,7 +70,7 @@ struct EditRoutineView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    appRouter.push(.activityListView(.add))
+                    myRoutineRouter.push(.activityListView(.add))
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -83,8 +83,7 @@ struct EditRoutineView: View {
 #Preview {
     NavigationStack {
         EditRoutineView()
-        
-            .environment(AppRouter())
+            .environment(MyRoutineRouter())
             .environment(RoutineStore())
     }
 }

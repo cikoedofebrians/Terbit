@@ -89,7 +89,7 @@ struct RoutineGuideView: View {
     NavigationStack {
         RoutineGuideView()
             .environment(RoutineStore())
-            .environment(AppRouter())
+            .environment(MyRoutineRouter())
     }
     
 }
@@ -97,7 +97,7 @@ struct RoutineGuideView: View {
 
 struct ActivityGuideView: View {
     @Environment(RoutineStore.self) var routineStore
-    @Environment(AppRouter.self) var appRouter
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     
     @Binding var currentActivityIndex: Int
     @Binding var isGuidingActive: Bool
@@ -122,7 +122,7 @@ struct ActivityGuideView: View {
                             isGuidingActive.toggle()
                         }
                     } else {
-                        appRouter.push(.routineGuideCompleteView)
+                        myRoutineRouter.push(.routineGuideCompleteView)
                     }
                  
                 } else {

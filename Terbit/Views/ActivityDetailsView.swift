@@ -26,7 +26,7 @@ enum ActivityDetailsType: Hashable {
 struct ActivityDetailsView: View {
     let activityDetailsType: ActivityDetailsType
     @Environment(RoutineStore.self) var routineStore
-    @Environment(AppRouter.self) var appRouter
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     
     var activity: MorningActivity {
         activityDetailsType.activity
@@ -55,7 +55,7 @@ struct ActivityDetailsView: View {
                         switch activityDetailsType {
                         case .add:
                             Button {
-                                appRouter.popUntil(.editRoutineView)
+                                myRoutineRouter.popUntil(.editRoutineView)
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                                     withAnimation {
                                         routineStore.selectedActivities.append(
@@ -72,7 +72,7 @@ struct ActivityDetailsView: View {
 
                         case .replace(_, let index):
                             Button {
-                                appRouter.popUntil(.editRoutineView)
+                                myRoutineRouter.popUntil(.editRoutineView)
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                                     withAnimation {
                                         routineStore.selectedActivities[index] =
@@ -117,7 +117,7 @@ struct ActivityDetailsView: View {
     NavigationStack {
         ActivityDetailsView(activityDetailsType: .add(constantMorningRoutine[1]))
             .environment(RoutineStore())
-            .environment(AppRouter())
+            .environment(MyRoutineRouter())
     }
     
 }

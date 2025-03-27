@@ -15,7 +15,7 @@ enum ActivityListType: Equatable, Hashable {
 struct ActivityList: View {
     let activityListType: ActivityListType
     
-    @Environment(AppRouter.self) var appRouter
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
     var body: some View {
@@ -24,9 +24,9 @@ struct ActivityList: View {
                 Button {
                     switch activityListType {
                     case .add:
-                        appRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
+                        myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
                     case .replace(let idx):
-                        appRouter.push(.activityDetailsView(ActivityDetailsType.replace(activity, idx)))
+                        myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.replace(activity, idx)))
                     }
                 } label: {
                     HStack (spacing: 0) {
@@ -44,7 +44,7 @@ struct ActivityList: View {
                         }
                         Spacer()
                         Button {
-                            appRouter.popUntil(.editRoutineView)
+                            myRoutineRouter.popUntil(.editRoutineView)
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                                 switch activityListType {
@@ -83,7 +83,7 @@ struct ActivityList: View {
 #Preview {
     NavigationStack {
         ActivityList(activityListType: .add)
-            .environment(AppRouter())
+            .environment(MyRoutineRouter())
             .environment(RoutineStore())
     }
 }

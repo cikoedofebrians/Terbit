@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RoutineGuideCompleteView: View {
-    @Environment(AppRouter.self) var appRouter
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     var body: some View {
         VStack (spacing:0){
             Image(systemName: "checkmark.seal.fill")
@@ -26,7 +26,7 @@ struct RoutineGuideCompleteView: View {
             
             
             Button {
-                appRouter.popToRoot()
+                myRoutineRouter.popToRoot()
             } label: {
                 Text("Done")
                     .foregroundStyle(.white)
@@ -48,6 +48,6 @@ struct RoutineGuideCompleteView: View {
 #Preview {
     NavigationStack {
         RoutineGuideCompleteView()
-            .environment(AppRouter())
+            .environment(MyRoutineRouter())
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MyRoutineView: View {
     
-    @Environment(AppRouter.self) var appRouter
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     @State var date: Date = Date()
     
@@ -24,7 +24,7 @@ struct MyRoutineView: View {
                                displayedComponents: .hourAndMinute)
                 }
                 Button {
-                    appRouter.push(.selectDayView)
+                    myRoutineRouter.push(.selectDayView)
                 } label: {
                     HStack {
                         Text("Repeat")
@@ -56,8 +56,7 @@ struct MyRoutineView: View {
                 
                 ForEach(routineStore.selectedActivities, id: \.self) { routineActivity in
                     Button {
-                        appRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
-                        
+                        myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
                     } label: {
                         HStack {
                             Text("\(routineActivity.index + 1)")
@@ -83,7 +82,7 @@ struct MyRoutineView: View {
             }
             Section ("ACTIONS") {
                 Button {
-                    appRouter.push(.routineGuideView)
+                    myRoutineRouter.push(.routineGuideView)
                 } label: {
                     Text("Start")
                 }
@@ -95,7 +94,7 @@ struct MyRoutineView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    appRouter.push(.editRoutineView)
+                    myRoutineRouter.push(.editRoutineView)
                 } label: {
                     Image(systemName: "pencil")
                 }
@@ -109,7 +108,7 @@ struct MyRoutineView: View {
     NavigationStack {
         MyRoutineView()
             .environment(RoutineStore())
-            .environment(AppRouter())
+            .environment(MyRoutineRouter())
     }
     
 }

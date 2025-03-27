@@ -41,11 +41,11 @@ struct HistoryListSection: View {
 
 struct HistoryListCard: View {
     let routineHistory: HistoryItemModel
-    @Environment(AppRouter.self) var appRouter
+    @Environment(HistoryRouter.self) var historyRouter
     
     var body: some View {
         Button(action: {
-                // appRouter.push()
+            historyRouter.push(.historyDetailsView)
             }) {
             HStack {
                 VStack(alignment: .leading, spacing: 6) {
@@ -88,6 +88,6 @@ struct HistoryItemModel: (Identifiable) {
     NavigationStack {
         HistoryListView()
             .environment(RoutineStore())
-            .environment(AppRouter())
+            .environment(MyRoutineRouter())
     }
 }

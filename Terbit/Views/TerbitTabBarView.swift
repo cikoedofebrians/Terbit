@@ -19,8 +19,8 @@ struct TerbitTabBarView: View {
                     MyRoutineView()
                         .navigationDestination(for: MyRoutineViewEnum.self) { screen in
                             switch screen {
-                            case .activityListView (let activityListType):
-                                ActivityList(activityListType: activityListType)
+                            case .activityListView:
+                                ActivityList()
                             case .selectDayView:
                                 SelectDayView()
                             case .editRoutineView:

@@ -7,14 +7,8 @@
 
 import SwiftUI
 
-enum ActivityListType: Equatable, Hashable {
-    case add
-    case replace(Int)
-}
 
 struct ActivityList: View {
-    let activityListType: ActivityListType
-    
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
@@ -22,12 +16,8 @@ struct ActivityList: View {
         List {
             ForEach(constantMorningRoutine, id: \.self) { activity in
                 Button {
-                    switch activityListType {
-                    case .add:
                         myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
-                    case .replace(let idx):
-                        myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.replace(activity, idx)))
-                    }
+                    
                 } label: {
                     HStack (spacing: 0) {
                         Rectangle()
@@ -47,23 +37,14 @@ struct ActivityList: View {
                             myRoutineRouter.popUntil(.editRoutineView)
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                switch activityListType {
-                                case .add:
-                                    withAnimation {
                                         routineStore.selectedActivities.append(
                                             ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
                                         )
-                                    }
-                                case .replace(let index):
-                                    withAnimation {
-                                        routineStore.selectedActivities[index] =
-                                        ActivityRoutine(activity: activity, index: index)
-                                    }
-                                    
-                                }
+                        
+                        
                             }
                         } label: {
-                            Text(activityListType == ActivityListType.add ? "Add" : "Replace" )
+                            Text("Add")
                         }
                         .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
                         .buttonStyle(.borderedProminent)
@@ -82,7 +63,7 @@ struct ActivityList: View {
 
 #Preview {
     NavigationStack {
-        ActivityList(activityListType: .add)
+        ActivityList()
             .environment(MyRoutineRouter())
             .environment(RoutineStore())
     }

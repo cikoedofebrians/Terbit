@@ -10,7 +10,7 @@ enum MyRoutineViewEnum: Hashable, Equatable {
     case editRoutineView
     case activityDetailsView(ActivityDetailsType)
     case selectDayView
-    case activityListView(ActivityListType)
+    case activityListView
     case routineGuideView
     case routineGuideCompleteView
 }

@@ -9,14 +9,18 @@ import SwiftUI
 
 struct EditRoutineView: View {
     
+    @State var editMode: EditMode = .inactive
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
     var body: some View {
-        Form {
+        List {
             ForEach(Array(routineStore.selectedActivities.enumerated()), id: \.1) { idx, routineActivity in
                 Button {
-                    myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
+                    if editMode == .inactive {
+                        myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
+                    }
+       
                 } label: {
                     HStack (spacing: 16){
                         Rectangle()
@@ -31,47 +35,33 @@ struct EditRoutineView: View {
                             .foregroundStyle(.secondary)
                         }
                         Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.secondary)
+                        if !editMode.isEditing {
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.secondary)
+                        }
+       
                     }
                     .tint(.primary)
                 }
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    Button {
-                        
+                    Button  (role: .destructive){
+                        withAnimation {
+                            routineStore.removeActivity(at: idx)
+                        }
+   
                     } label: {
-                        Image(systemName: "trash.circle.fill")
-                            .scaleEffect()
-                            .foregroundStyle(.white, .red)
+                        Image(systemName: "trash")
+                            .foregroundStyle(.white)
                     }
-                    .tint(.clear)
-
-//                    Button {
-//                        myRoutineRouter.push(.activityListView(.replace(idx)))
-//                    } label: {
-//                        Image(systemName: "arrow.left.arrow.right")
-//                    }
-//                    .tint(.green)
-//                    
-//                    Button (role: .destructive){
-//                        withAnimation {
-//                            if let index = routineStore.selectedActivities.firstIndex(where: { $0.activity.id == routineActivity.activity.id }) {
-//                                routineStore.removeActivityAt(index: index)
-//                                print(index)
-//                            }
-//                            
-//                        }
-//                    } label: {
-//                        Image(systemName: "trash.fill")
-//                    }
-//                    .tint(.red)
-                    
-                    
+                    .tint(.red)
                 }
-
+                .moveDisabled(!editMode.isEditing)
+                
             }
-            
-
+   
+            .onDelete { offsets in
+                print(offsets)
+            }
             .onMove { from, to in
                 print(from)
                 print(to)
@@ -79,15 +69,57 @@ struct EditRoutineView: View {
             
         }
 
+        .environment(\.editMode, $editMode)
         .navigationTitle("Manage Routine")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    myRoutineRouter.push(.activityListView(.add))
-                } label: {
-                    Image(systemName: "plus")
+                HStack(spacing: 0) {
+                    GeometryReader { proxy in
+                        Button {
+                            withAnimation {
+                                if editMode.isEditing {
+                                    editMode = .inactive
+                                } else {
+                                    editMode = .active
+                                }
+                            }
+
+                        } label: {
+                            Text(editMode.isEditing ? "Done" : "Edit")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .padding(.vertical, 6)
+                                .foregroundStyle(.white)
+                                .frame(width: proxy.size.width)
+                                .background {
+                                    Capsule()
+                                        .fill(Color.accentColor)
+                                }
+                        }
+                    }
+                    .padding(.trailing, 8)
+                    if !editMode.isEditing {
+                        Button {
+                            myRoutineRouter.push(.activityListView)
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+
+                                .padding(6)
+                                .background {
+                                    Circle()
+                                        .fill(Color.accentColor)
+                                }
+                        }
+                    }
+                   
+    
+
+
                 }
-                
+                .frame(width: 100)
             }
         }
     }

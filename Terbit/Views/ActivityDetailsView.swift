@@ -10,13 +10,11 @@ import SwiftUI
 enum ActivityDetailsType: Hashable {
     case viewOnly(MorningActivity)
     case add(MorningActivity)
-    case replace(MorningActivity, Int)
     
     var activity: MorningActivity {
         switch self {
         case    .viewOnly(let activity),
-                .add(let activity),
-                .replace(let activity, _):
+                .add(let activity):
             return activity
         }
     }
@@ -70,21 +68,6 @@ struct ActivityDetailsView: View {
                             .buttonStyle(.borderedProminent)
                             .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
 
-                        case .replace(_, let index):
-                            Button {
-                                myRoutineRouter.popUntil(.editRoutineView)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                    withAnimation {
-                                        routineStore.selectedActivities[index] =
-                                            ActivityRoutine(activity: activity, index: index)
-                                    }
-                                }
-                            } label: {
-                                Text("Replace")
-                            }
-                            .buttonBorderShape(.capsule)
-                            .buttonStyle(.borderedProminent)
-                            .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
                         case .viewOnly(_):
                             EmptyView()
                         }

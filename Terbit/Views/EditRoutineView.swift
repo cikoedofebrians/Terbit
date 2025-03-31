@@ -36,36 +36,49 @@ struct EditRoutineView: View {
                     }
                     .tint(.primary)
                 }
-                .swipeActions(edge: .trailing) {
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                     Button {
-                        myRoutineRouter.push(.activityListView(.replace(idx)))
+                        
                     } label: {
-                        Image(systemName: "arrow.left.arrow.right")
+                        Image(systemName: "trash.circle.fill")
+                            .scaleEffect()
+                            .foregroundStyle(.white, .red)
                     }
-                    .tint(.green)
-                    
-                    Button (role: .destructive){
-                        withAnimation {
-                            if let index = routineStore.selectedActivities.firstIndex(where: { $0.activity.id == routineActivity.activity.id }) {
-                                routineStore.removeActivityAt(index: index)
-                                print(index)
-                            }
-                            
-                        }
-                    } label: {
-                        Image(systemName: "trash.fill")
-                    }
-                    .tint(.red)
+                    .tint(.clear)
+
+//                    Button {
+//                        myRoutineRouter.push(.activityListView(.replace(idx)))
+//                    } label: {
+//                        Image(systemName: "arrow.left.arrow.right")
+//                    }
+//                    .tint(.green)
+//                    
+//                    Button (role: .destructive){
+//                        withAnimation {
+//                            if let index = routineStore.selectedActivities.firstIndex(where: { $0.activity.id == routineActivity.activity.id }) {
+//                                routineStore.removeActivityAt(index: index)
+//                                print(index)
+//                            }
+//                            
+//                        }
+//                    } label: {
+//                        Image(systemName: "trash.fill")
+//                    }
+//                    .tint(.red)
                     
                     
                 }
+
             }
+            
+
             .onMove { from, to in
                 print(from)
                 print(to)
             }
             
         }
+
         .navigationTitle("Manage Routine")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

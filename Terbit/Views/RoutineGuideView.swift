@@ -15,7 +15,7 @@ struct RoutineGuideView: View {
     @State private var currentActivityIndex: Int = 0
     @State private var nextActivityIndex: Int = 0
     
-    
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
     var selectedActivities:  [ActivityRoutine] {
@@ -79,9 +79,11 @@ struct RoutineGuideView: View {
                 ActivityGuideView(currentActivityIndex: $currentActivityIndex, isGuidingActive: $isGuidingActive, nextActivityIndex: $nextActivityIndex)
             }
         }
+        .onAppear(perform: {
+            myRoutineRouter.turnOffTabBar()
+        })
         .navigationTitle("Routine Guide")
         .navigationBarTitleDisplayMode(.inline)
-        
     }
 }
 

@@ -32,15 +32,7 @@ struct TerbitApp: App {
     
     var body: some Scene {
         WindowGroup {
-            //            NavigationStack (path: $MyRoutineRouter.path) {
-            //                MyRoutineView()
-
-            //                
-            //            }
-            
             TerbitTabBarView()
-
-            
         }
         //        .modelContainer(sharedModelContainer)
     }

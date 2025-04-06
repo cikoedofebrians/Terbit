@@ -25,27 +25,32 @@ class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
         }
     }
     
-    func sendNotification(date: DateComponents) {
-        
-        let dateComponents = date
+    func scheduleNotification(hour: Int, minute: Int, weekdays: [Int]) {
         
         let content = UNMutableNotificationContent()
-        content.title = "Hello, World!"
-        content.body = "This is a test notification."
+        content.title = "Habis gelap terbitlah terang"
+        content.body = "Cerahkan harimu dengan aktivitas yang sudah kamu buat!!"
         
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-        
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request) { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                } else {
-                    print( "Notification sent.")
+        for weekday in weekdays {
+            var dateComponents = DateComponents()
+            dateComponents.weekday = weekday
+            dateComponents.hour = hour
+            dateComponents.minute = minute
+            
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+            
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            
+            UNUserNotificationCenter.current().add(request) { error in
+                    if let error = error {
+                        print(error.localizedDescription)
+                    } else {
+                        print( "Notification sent.")
+                    }
                 }
             }
-        
     }
+    
     
     func removeNotification(identifier: String) {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
@@ -62,5 +67,10 @@ class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
             print("Removing notification for weekday \(weekday) with identifier \(identifier)")
             removeNotification(identifier: identifier)
         }
+    }
+    
+    func removeAllNotifications() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        print("All notification has been canceled")
     }
 }

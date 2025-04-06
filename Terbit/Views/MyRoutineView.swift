@@ -11,17 +11,24 @@ struct MyRoutineView: View {
     
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
-    @State var date: Date = Date()
+    @Environment(\.modelContext) private var modelContext
+    @StateObject private var viewModel: MyRoutineViewModel
     
+    @State private var hour: Date
     
-
+    init(viewModel: MyRoutineViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        _hour = State(initialValue: viewModel.getInitialHour())
+    }
     
     var body: some View {
         Form {
             Section("Schedule") {
                 HStack {
-                    DatePicker("Hour", selection: $date,
-                               displayedComponents: .hourAndMinute)
+                    DatePicker("Hour", selection: $hour, displayedComponents: .hourAndMinute)
+                        .onChange(of: hour) { _, newValue in
+                            viewModel.updateHour(newValue)
+                        }
                 }
                 Button {
                     myRoutineRouter.push(.selectDayView)
@@ -30,18 +37,19 @@ struct MyRoutineView: View {
                         Text("Repeat")
                         Spacer()
                         Group {
-                            Text(routineStore.selectedDays.count == 0 ?
+                            
+                            Text(viewModel.preference?.days.isEmpty ?? true ?
                                  "Never" :
-                                    routineStore.selectedDays.count == constantDays.count ?
+                                 viewModel.preference?.days.count == constantDays.count ?
                                  "Every day" :
-                                    routineStore.selectedDays.map({ String($0.prefix(3)) }).joined(separator: ", "))
+                                 viewModel.preference?.days.map({ String($0.prefix(3)) }).joined(separator: ", ") ?? "")
                             Image(systemName: "chevron.right")
                         }                    .foregroundStyle(.secondary)
                     }
                 }
                 .tint(.primary)
-                
             }
+            
             Section ("Today Activity (🔥 2 DAYS STREAK)"){
                 HStack {
                     Text("Total Duration")
@@ -101,14 +109,21 @@ struct MyRoutineView: View {
                 
             }
         }
+        .onAppear {
+            viewModel.loadPreference()
+        }
     }
 }
 
-#Preview {
-    NavigationStack {
-        MyRoutineView()
-            .environment(RoutineStore())
-            .environment(MyRoutineRouter())
-    }
-    
-}
+//#Preview {
+//    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+//    let container = try! ModelContainer(for: PreferenceModel.self, configurations: config)
+//    let vm = MyRoutineViewModel(context: container.mainContext)
+//    
+//    return NavigationStack {
+//        MyRoutineView(viewModel: vm)
+//            .environment(RoutineStore())
+//            .environment(MyRoutineRouter())
+//            .modelContainer(container)
+//    }
+//}

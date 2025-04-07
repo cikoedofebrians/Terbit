@@ -10,17 +10,13 @@ import Foundation
 
 struct MorningActivity: Identifiable, Hashable {
     let id = UUID()
-    let name: String
+    let title: String
     let description: String
     let instructions: [String]
     let duration: Int
-    
-//    var durationString: String {
-//        let formatter = DateComponentsFormatter()
-//        formatter.unitsStyle = .abbreviated
-//        formatter.allowedUnits = [.hour, .minute]
-//        return formatter.string(from: duration * 60) ?? "\(duration) min"
-//    }
+    let logoImage: String
+    let images: [String]
+    let instructionDurations: [Int]
 }
 
 

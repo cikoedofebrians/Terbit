@@ -20,12 +20,15 @@ struct ActivityList: View {
                     
                 } label: {
                     HStack (spacing: 0) {
-                        Rectangle()
-                            .frame(width: 64, height: 64)
-                            .foregroundStyle(.gray.opacity(0.3))
+                        Image(systemName: activity.logoImage)
+                            .font(.system(size: 32))
+                            .frame(width: 42, alignment: .center)
                             .padding(.trailing, 16)
+                            .foregroundStyle(
+                                LinearGradient(colors: [Color.red, Color.blue], startPoint: .leading, endPoint: .trailing)
+                            )
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(activity.name)
+                            Text(activity.title)
                             HStack {
                                 Image(systemName: "timer")
                                 Text("\(activity.duration) min")
@@ -41,10 +44,11 @@ struct ActivityList: View {
                                             ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
                                         )
                         
-                        
                             }
                         } label: {
                             Text("Add")
+                                .fontWeight(.semibold)
+                                .padding(.horizontal, 6)
                         }
                         .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
                         .buttonStyle(.borderedProminent)

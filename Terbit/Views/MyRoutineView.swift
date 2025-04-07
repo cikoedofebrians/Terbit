@@ -23,7 +23,7 @@ struct MyRoutineView: View {
                 Button {
                     myRoutineRouter.push(.editRoutineView)
                 } label: {
-                    Text("Manage Routine")
+                    Text("Manage")
                 }
                 
             }

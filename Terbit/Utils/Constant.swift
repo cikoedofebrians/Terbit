@@ -9,84 +9,96 @@ let constantDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Fri
 
 let constantMorningRoutine: [MorningActivity] = [
     MorningActivity(
-        name: "Hydration",
-        description: "Rehydrate your body after sleep",
-        instructions: [
-            "Drink a glass of water (8-16 oz)",
-            "Add lemon for extra benefits if desired",
-            "Wait 15-30 minutes before eating"
-        ],
-        duration: 5
-    ),
-    
-    MorningActivity(
-        name: "Meditation",
-        description: "Clear your mind and set intentions",
-        instructions: [
-            "Find a quiet, comfortable space",
-            "Sit with good posture",
-            "Focus on your breath for 5-10 minutes",
-            "Optionally use a guided meditation app"
-        ],
-        duration: 10
-    ),
-    
-    MorningActivity(
-        name: "Stretching",
-        description: "Wake up your muscles and improve flexibility",
-        instructions: [
-            "Perform gentle neck rolls",
-            "Do shoulder shrugs and rolls",
-            "Stretch arms overhead",
-            "Touch toes or do forward fold",
-            "Do gentle spinal twists"
-        ],
-        duration: 7
-    ),
-    
-    MorningActivity(
-        name: "Exercise",
-        description: "Boost energy and metabolism",
-        instructions: [
-            "Choose between yoga, brisk walk, or quick workout",
-            "Aim for at least 15 minutes of movement",
-            "Include both cardio and strength if possible"
-        ],
-        duration: 15
-    ),
-    
-    MorningActivity(
-        name: "Healthy Breakfast",
-        description: "Fuel your body for the day",
-        instructions: [
-            "Include protein, healthy fats, and complex carbs",
-            "Example: Eggs with avocado toast",
-            "Or oatmeal with nuts and berries",
-            "Avoid processed sugars"
-        ],
-        duration: 20
-    ),
-    
-    MorningActivity(
-        name: "Planning",
-        description: "Set your priorities for the day",
-        instructions: [
-            "Review your calendar",
-            "List top 3 priorities",
-            "Visualize your successful day",
-            "Check and respond to critical emails only"
-        ],
-        duration: 10
-    ),
-    
-    MorningActivity(
-        name: "Personal Growth",
-        description: "Invest in self-improvement",
-        instructions: [
-            "Read 10 pages of a book",
-            "Or listen to a podcast",
-            "Or practice a language for 10 minutes"
-        ],
-        duration: 15
-    )
+          title: "Set Focus",
+          description: "Start your morning with clarity and intention. By identifying what matters most today, you create direction and purpose. This small act helps you mentally prepare and reduces the overwhelm of a scattered to-do list.",
+          instructions: [
+              "Write down or say your top 3 priorities for today."
+          ],
+          duration: 2,
+          logoImage: "applepencil.and.scribble",
+          images: ["SetFocus"],
+          instructionDurations: [3]
+      ),
+      MorningActivity(
+          title: "Hydrate Gently",
+          description: "Drinking water or coffee first thing in the morning reawakens your body and mind. It refreshes you after a night of rest, supports digestion, and signals your system that the day is beginning.",
+          instructions: [
+              "Sip your water or coffee slowly and stay present with the moment."
+          ],
+          duration: 1,
+          logoImage: "cup.and.saucer",
+          images: ["Hydrate"],
+          instructionDurations: [60]
+      ),
+      MorningActivity(
+          title: "Stretch Your Body",
+          description: "Release the stiffness from sleep and long commutes with simple, restorative movements. A short stretch in the morning helps activate your muscles, improve posture, and invite ease into your body. These light motions can refresh your energy and prepare you to sit or stand with more comfort and awareness throughout the day.",
+          instructions: [
+              "Sit tall, clasp hands behind your head, and arch your back while looking up.",
+              "Hold the back of a chair, bend your knees, and lower into a gentle squat.",
+              "Cross your right ankle over your left knee and press the right knee down gently.",
+              "Cross your left ankle over your right knee and press the left knee down gently.",
+              "Tilt your head to the right, bringing your ear toward your shoulder.",
+              "Tilt your head to the left, bringing your ear toward your shoulder.",
+              "Reach your right arm overhead and bend gently to the left.",
+              "Reach your left arm overhead and bend gently to the right."
+          ],
+          duration: 2,
+          logoImage: "figure.strengthtraining.functional",
+          images: ["StretchBack", "StretchBackAndLateral", "StretchGlutesAndAbductors", "StretchGlutesAndAbductors", "StretchNeck", "StretchNeck", "StretchOblique", "StretchOblique"],
+//          instructionDurations: [20, 30, 30, 20, 20, 20, 20, 20]
+          instructionDurations: [3, 3, 3, 3, 3, 3, 3, 3]
+      ),
+      MorningActivity(
+          title: "Mindful Breathing",
+          description: "Intentional breathing calms the mind, lowers stress, and sharpens focus. Even one minute of conscious breathwork can create a sense of balance and control as you begin your workday.",
+          instructions: [
+              "Inhale for 4 seconds.",
+              "Hold your breath for 4 seconds.",
+              "Exhale for 8 seconds.",
+              "Hold again for 4 seconds.",
+              "Repeat for a few cycles.",
+              "Inhale for 4 seconds.",
+              "Hold your breath for 4 seconds.",
+              "Exhale for 4 seconds.",
+              "Hold again for 4 seconds.",
+              "Repeat for a few cycles.",
+              "Inhale for 4 seconds.",
+              "Hold your breath for 4 seconds.",
+              "Exhale for 4 seconds.",
+              "Hold again for 4 seconds.",
+              "Repeat for a few cycles.",
+              "Inhale for 4 seconds.",
+              "Hold your breath for 4 seconds.",
+              "Exhale for 4 seconds.",
+              "Hold again for 4 seconds.",
+              "Repeat for a few cycles.",
+              "Inhale for 4 seconds.",
+              "Hold your breath for 4 seconds.",
+              "Exhale for 4 seconds.",
+              "Hold again for 4 seconds.",
+              "Repeat for a few cycles.",
+              "Inhale for 4 seconds.",
+              "Hold your breath for 4 seconds.",
+              "Exhale for 4 seconds.",
+              "Hold again for 4 seconds.",
+              "Repeat for a few cycles."
+          ],
+          duration: 2,
+          logoImage: "wind",
+          images: [],
+          instructionDurations: [4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4]
+          
+      ),
+      MorningActivity(
+          title: "Short Walk",
+          description: "A brief walk recharges your body and refreshes your senses. It promotes movement, supports circulation, and gives your mind space to breathe and reset before diving into tasks.",
+          instructions: [
+              "Walk slowly and observe your surroundings — the colors, sounds, and how your feet feel on the ground."
+          ],
+          duration: 3,
+          logoImage: "figure.walk",
+          images: ["Walk"],
+          instructionDurations: [180]
+      )
 ]

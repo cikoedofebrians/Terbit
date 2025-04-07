@@ -12,8 +12,8 @@ import SwiftUI
 @Observable
 class RoutineStore {
     var selectedActivities: [ActivityRoutine] = [
-        ActivityRoutine(activity: constantMorningRoutine[0], index: 0),
-        ActivityRoutine(activity: constantMorningRoutine[1], index: 1),
+//        ActivityRoutine(activity: constantMorningRoutine[0], index: 0),
+        ActivityRoutine(activity: constantMorningRoutine[2], index: 2),
     ]
     
     func removeActivityAt(index: Int) {

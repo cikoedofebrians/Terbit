@@ -18,14 +18,14 @@ struct TerbitTabBarView: View {
         TabView {
             Tab("My Routine", systemImage: "sunrise.fill") {
                 NavigationStack(path: $myRoutineRouter.path) {
-                    MyRoutineView(viewModel: MyRoutineViewModel(context: modelContext))
+                    MyRoutineView()
 
                         .navigationDestination(for: MyRoutineViewEnum.self) { screen in
                             switch screen {
                             case .activityListView (let activityListType):
                                 ActivityList(activityListType: activityListType)
                             case .selectDayView:
-                                SelectDayView(viewModel: SelectDayViewModel(context: modelContext))
+                                SelectDayView()
                             case .editRoutineView:
                                 EditRoutineView()
                             case .routineGuideView:

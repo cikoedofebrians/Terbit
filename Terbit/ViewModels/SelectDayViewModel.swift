@@ -11,33 +11,46 @@ import SwiftData
 @MainActor
 class SelectDayViewModel: ObservableObject {
     @Published var preference: PreferenceModel?
+    @Published var selectedDays: [String] = []
 
-    private var context: ModelContext
+    private var context: ModelContext?
 
-    init(context: ModelContext) {
-        self.context = context
-        loadPreference()
-    }
+    init() {}
+    
+    func setContext(_ context: ModelContext) {
+            self.context = context
+            loadPreference()
+        }
 
     func loadPreference() {
-        let descriptor = FetchDescriptor<PreferenceModel>()
-        if let result = try? context.fetch(descriptor).first {
-            self.preference = result
+            guard let context else { return }
+            let descriptor = FetchDescriptor<PreferenceModel>()
+            if let result = try? context.fetch(descriptor).first {
+                self.preference = result
+                self.selectedDays = result.days
+            }
         }
-    }
     
-    func getInitialDays() -> [String] {
-        return preference?.days ?? []
-    }
-
-    func updateDays(_ days: [String]) {
-        if let pref = preference {
-            pref.days = days
-        } else {
-            let newPref = PreferenceModel(hour: Date(), days: days)
-            context.insert(newPref)
-            preference = newPref
+    func toggleDay(_ day: String) {
+            if selectedDays.contains(day) {
+                selectedDays.removeAll { $0 == day }
+            } else {
+                selectedDays.append(day)
+            }
+            updateDays()
         }
-        try? context.save()
-    }
+
+    private func updateDays() {
+            guard let context else { return }
+
+            if let pref = preference {
+                pref.days = selectedDays
+            } else {
+                let newPref = PreferenceModel(hour: Date(), days: selectedDays)
+                context.insert(newPref)
+                preference = newPref
+            }
+
+            try? context.save()
+        }
 }

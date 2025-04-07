@@ -5,30 +5,22 @@
 //  Created by Ciko Edo Febrian on 24/03/25.
 //
 import SwiftUI
-
+import Foundation
 
 struct MyRoutineView: View {
-    
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var viewModel: MyRoutineViewModel
-    
-    @State private var hour: Date
-    
-    init(viewModel: MyRoutineViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-        _hour = State(initialValue: viewModel.getInitialHour())
-    }
+    @StateObject private var viewModel = MyRoutineViewModel()
     
     var body: some View {
         Form {
             Section("Schedule") {
                 HStack {
-                    DatePicker("Hour", selection: $hour, displayedComponents: .hourAndMinute)
-                        .onChange(of: hour) { _, newValue in
+                    DatePicker("Hour", selection: $viewModel.hour, displayedComponents: .hourAndMinute)
+                        .onChange(of: viewModel.hour) { _, newValue in
                             viewModel.updateHour(newValue)
-                        }
+                    }
                 }
                 Button {
                     myRoutineRouter.push(.selectDayView)
@@ -56,15 +48,14 @@ struct MyRoutineView: View {
                     Spacer()
                     HStack {
                         Image(systemName: "timer")
-                        Text("\(routineStore.getTotalDuration()) min")
+                        Text("\(viewModel.getTotalDuration()) min")
                     }
                     .foregroundStyle(.secondary)
                 }
                 
-                
-                ForEach(routineStore.selectedActivities, id: \.self) { routineActivity in
+                ForEach(viewModel.selectedActivities, id: \.self) { routineActivity in
                     Button {
-                        myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
+//                        myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
                     } label: {
                         HStack {
                             Text("\(routineActivity.index + 1)")
@@ -94,7 +85,7 @@ struct MyRoutineView: View {
                 } label: {
                     Text("Start")
                 }
-                .disabled(routineStore.selectedActivities.isEmpty)
+                .disabled(viewModel.selectedActivities.isEmpty)
             }
         }
         .navigationTitle("My Routine")
@@ -110,7 +101,7 @@ struct MyRoutineView: View {
             }
         }
         .onAppear {
-            viewModel.loadPreference()
+            viewModel.setContext(modelContext)
         }
     }
 }

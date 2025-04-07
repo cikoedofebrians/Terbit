@@ -7,6 +7,90 @@
 
 let constantDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
+let constantActivities: [ActivityModel] = [
+    ActivityModel(
+        name: "Hydration",
+        desc: "Rehydrate your body after sleep",
+        instructions: [
+            "Drink a glass of water (8-16 oz)",
+            "Add lemon for extra benefits if desired",
+            "Wait 15-30 minutes before eating"
+        ],
+        duration: 5
+    ),
+    
+    ActivityModel(
+        name: "Meditation",
+        desc: "Clear your mind and set intentions",
+        instructions: [
+            "Find a quiet, comfortable space",
+            "Sit with good posture",
+            "Focus on your breath for 5-10 minutes",
+            "Optionally use a guided meditation app"
+        ],
+        duration: 10
+    ),
+    
+    ActivityModel(
+        name: "Stretching",
+        desc: "Wake up your muscles and improve flexibility",
+        instructions: [
+            "Perform gentle neck rolls",
+            "Do shoulder shrugs and rolls",
+            "Stretch arms overhead",
+            "Touch toes or do forward fold",
+            "Do gentle spinal twists"
+        ],
+        duration: 7
+    ),
+    
+    ActivityModel(
+        name: "Exercise",
+        desc: "Boost energy and metabolism",
+        instructions: [
+            "Choose between yoga, brisk walk, or quick workout",
+            "Aim for at least 15 minutes of movement",
+            "Include both cardio and strength if possible"
+        ],
+        duration: 15
+    ),
+    
+    ActivityModel(
+        name: "Healthy Breakfast",
+        desc: "Fuel your body for the day",
+        instructions: [
+            "Include protein, healthy fats, and complex carbs",
+            "Example: Eggs with avocado toast",
+            "Or oatmeal with nuts and berries",
+            "Avoid processed sugars"
+        ],
+        duration: 20
+    ),
+    
+    ActivityModel(
+        name: "Planning",
+        desc: "Set your priorities for the day",
+        instructions: [
+            "Review your calendar",
+            "List top 3 priorities",
+            "Visualize your successful day",
+            "Check and respond to critical emails only"
+        ],
+        duration: 10
+    ),
+    
+    ActivityModel(
+        name: "Personal Growth",
+        desc: "Invest in self-improvement",
+        instructions: [
+            "Read 10 pages of a book",
+            "Or listen to a podcast",
+            "Or practice a language for 10 minutes"
+        ],
+        duration: 15
+    )
+]
+
 let constantMorningRoutine: [MorningActivity] = [
     MorningActivity(
         name: "Hydration",

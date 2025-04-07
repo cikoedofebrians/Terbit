@@ -6,50 +6,48 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SelectDayView: View {
     
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var viewModel: SelectDayViewModel
+    @StateObject private var viewModel = SelectDayViewModel()
+    @Query private var preferenceModel: [PreferenceModel]
+    
+    @State private var selectedDays: [String] = []
+   
 //    @Environment(RoutineStore.self) var routineStore
-    @State var selectedDays: [String]
-    
-    init(viewModel: SelectDayViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-        _selectedDays = State(initialValue: viewModel.preference?.days ?? [])
-    }
-    
     var body: some View {
-        List {
-            ForEach(constantDays, id: \.self) { day in
-                Button {
-                    if selectedDays.contains(day) {
-                        selectedDays.removeAll { $0 == day }
-                    } else {
-                        selectedDays.append(day)
-                    }
-                } label: {
-                    HStack {
-                        Text(day)
-                        if selectedDays.contains(day) {
-                            Spacer()
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(.green)
+
+            List {
+                ForEach(constantDays, id: \.self) { day in
+                    Button {
+                        viewModel.toggleDay(day)
+//                        preferenceModel.first!.daysRaw = "Monday,Tuesday,Wednesday,Thursday,Friday"
+//                        do {
+//                            try modelContext.save()
+//                        } catch {
+//                            print("ANJAY")
+//                        }
+                    } label: {
+                        HStack {
+                            Text(day)
+                            if viewModel.selectedDays.contains(day) {
+                                Spacer()
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(.green)
+                            }
                         }
                     }
+                    .tint(.primary)
                 }
-                .tint(.primary)
+            }
+            .navigationTitle("Day")
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                viewModel.setContext(modelContext)
             }
         }
-        .navigationTitle("Day")
-        .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: selectedDays) { _, newDays in
-            viewModel.updateDays(newDays)
-        }
-        .onAppear {
-            viewModel.loadPreference()
-        }
-    }
 }
 
 //#Preview {

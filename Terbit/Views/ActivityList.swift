@@ -16,20 +16,23 @@ struct ActivityList: View {
     let activityListType: ActivityListType
     
     @Environment(MyRoutineRouter.self) var myRoutineRouter
-    @Environment(RoutineStore.self) var routineStore
+//    @Environment(RoutineStore.self) var routineStore
+   
+    @Environment(\.modelContext) private var modelContext
+    @StateObject private var viewModel = ActivityViewModel()
     
     var body: some View {
         List {
-            ForEach(constantMorningRoutine, id: \.self) { activity in
+            ForEach(viewModel.activities, id: \.self) { activity in
                 Button {
-                    switch activityListType {
-                    case .add:
-                        myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
-                    case .replace(let idx):
-                        myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.replace(activity, idx)))
-                    }
+//                    switch activityListType {
+//                    case .add:
+//                        myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
+//                    case .replace(let idx):
+//                        myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.replace(activity, idx)))
+//                    }
                 } label: {
-                    HStack (spacing: 0) {
+                    HStack(spacing: 0) {
                         Rectangle()
                             .frame(width: 64, height: 64)
                             .foregroundStyle(.gray.opacity(0.3))
@@ -44,46 +47,46 @@ struct ActivityList: View {
                         }
                         Spacer()
                         Button {
-                            myRoutineRouter.popUntil(.editRoutineView)
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                switch activityListType {
-                                case .add:
-                                    withAnimation {
-                                        routineStore.selectedActivities.append(
-                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
-                                        )
-                                    }
-                                case .replace(let index):
-                                    withAnimation {
-                                        routineStore.selectedActivities[index] =
-                                        ActivityRoutine(activity: activity, index: index)
-                                    }
-                                    
-                                }
-                            }
+//                            myRoutineRouter.popUntil(.editRoutineView)
+
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+//                                switch activityListType {
+//                                case .add:
+//                                    withAnimation {
+//                                        routineStore.selectedActivities.append(
+//                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
+//                                        )
+//                                    }
+//                                case .replace(let index):
+//                                    withAnimation {
+//                                        routineStore.selectedActivities[index] =
+//                                            ActivityRoutine(activity: activity, index: index)
+//                                    }
+//                                }
+//                            }
                         } label: {
-                            Text(activityListType == ActivityListType.add ? "Add" : "Replace" )
+                            Text(activityListType == .add ? "Add" : "Replace")
                         }
-                        .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
+//                        .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id }))
                         .buttonStyle(.borderedProminent)
                         .buttonBorderShape(.capsule)
                         .tint(.accentColor)
-                        
                     }
                 }
                 .tint(.primary)
-                
             }
         }
         .navigationTitle("Activity List")
+        .onAppear {
+            viewModel.setContext(modelContext)
+        }
     }
 }
 
-#Preview {
-    NavigationStack {
-        ActivityList(activityListType: .add)
-            .environment(MyRoutineRouter())
-            .environment(RoutineStore())
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        ActivityList(activityListType: .add)
+//            .environment(MyRoutineRouter())
+//            .environment(RoutineStore())
+//    }
+//}

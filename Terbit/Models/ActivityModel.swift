@@ -8,17 +8,16 @@ import SwiftData
 import Foundation
 
 @Model
-class ActivityModel: Identifiable, Hashable {
-    var id: UUID = UUID()
+class ActivityModel {
     var name: String
     var desc: String
     var instructions: [String]
     var duration: Int
 
-    init(name: String, duration: Int, description: String, instructions: [String]) {
+    init(name: String, desc: String, instructions: [String], duration: Int) {
         self.name = name
-        self.duration = duration
-        self.desc = description
+        self.desc = desc
         self.instructions = instructions
+        self.duration = duration
     }
 }

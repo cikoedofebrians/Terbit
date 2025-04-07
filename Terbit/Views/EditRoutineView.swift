@@ -10,13 +10,17 @@ import SwiftUI
 struct EditRoutineView: View {
     
     @Environment(MyRoutineRouter.self) var myRoutineRouter
-    @Environment(RoutineStore.self) var routineStore
+//    @Environment(RoutineStore.self) var routineStore
+    
+    @Environment(\.modelContext) private var modelContext
+    @StateObject private var viewModel = EditRoutineViewModel()
     
     var body: some View {
         Form {
-            ForEach(Array(routineStore.selectedActivities.enumerated()), id: \.1) { idx, routineActivity in
+            ForEach(viewModel.selectedActivities, id: \.self) { routineActivity in
                 Button {
-                    myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
+                    viewModel.removeActivity(at: routineActivity.index)
+//                    myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
                 } label: {
                     HStack (spacing: 16){
                         Rectangle()
@@ -38,20 +42,19 @@ struct EditRoutineView: View {
                 }
                 .swipeActions(edge: .trailing) {
                     Button {
-                        myRoutineRouter.push(.activityListView(.replace(idx)))
+//                        myRoutineRouter.push(.activityListView(.replace(idx)))
                     } label: {
                         Image(systemName: "arrow.left.arrow.right")
                     }
                     .tint(.green)
                     
                     Button (role: .destructive){
-                        withAnimation {
-                            if let index = routineStore.selectedActivities.firstIndex(where: { $0.activity.id == routineActivity.activity.id }) {
-                                routineStore.removeActivityAt(index: index)
-                                print(index)
-                            }
-                            
-                        }
+//                        withAnimation {
+//                            if let index = routineStore.selectedActivities.firstIndex(where: { $0.activity.id == routineActivity.activity.id }) {
+//                                routineStore.removeActivityAt(index: index)
+//                                print(index)
+//                            }
+//                        }
                     } label: {
                         Image(systemName: "trash.fill")
                     }
@@ -77,13 +80,16 @@ struct EditRoutineView: View {
                 
             }
         }
+        .onAppear {
+            viewModel.setContext(modelContext)
+        }
     }
 }
 
-#Preview {
-    NavigationStack {
-        EditRoutineView()
-            .environment(MyRoutineRouter())
-            .environment(RoutineStore())
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        EditRoutineView()
+//            .environment(MyRoutineRouter())
+//            .environment(RoutineStore())
+//    }
+//}

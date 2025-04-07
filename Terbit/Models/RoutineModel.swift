@@ -4,16 +4,16 @@
 //
 //  Created by Umar Abdul Azis on 05/04/25.
 //
-
+import Foundation
 import SwiftData
 
 @Model
 class RoutineModel {
-    @Relationship var selectedActiviies: [ActivityModel]
-    var index: [Int]
-    
-    init(selectedActiviies: [ActivityModel], index: [Int] = []) {
-        self.selectedActiviies = selectedActiviies
+    @Relationship var activity: ActivityModel
+    var index: Int
+
+    init(activity: ActivityModel, index: Int) {
+        self.activity = activity
         self.index = index
     }
 }

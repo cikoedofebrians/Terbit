@@ -12,18 +12,17 @@ struct TerbitTabBarView: View {
     @State var historyRouter = HistoryRouter()
     @State var routineStore: RoutineStore = RoutineStore()
     
-    @Environment(\.modelContext) private var modelContext
+//    @Environment(\.modelContext) private var modelContext
     
     var body: some View {
         TabView {
             Tab("My Routine", systemImage: "sunrise.fill") {
                 NavigationStack(path: $myRoutineRouter.path) {
                     MyRoutineView()
-
                         .navigationDestination(for: MyRoutineViewEnum.self) { screen in
                             switch screen {
-                            case .activityListView (let activityListType):
-                                ActivityList(activityListType: activityListType)
+                            case .activityListView:
+                                ActivityList()
                             case .selectDayView:
                                 SelectDayView()
                             case .editRoutineView:
@@ -36,9 +35,18 @@ struct TerbitTabBarView: View {
                                 RoutineGuideCompleteView()
                             }
                         }
-
-
                 }
+//                .task {
+//                    if (myRoutineRouter.path.count == 0) {
+//                        myRoutineRouter.turnOnTabBar()
+//                    }
+//                }
+//                .onChange(of: myRoutineRouter.path, { _, __ in
+//                    if (myRoutineRouter.path.count == 0) {
+//                        myRoutineRouter.turnOnTabBar()
+//                    }
+//                })
+                .toolbar(myRoutineRouter.tabBarVisibility, for: .tabBar)
                 .environment(routineStore)
                 .environment(myRoutineRouter)
               
@@ -53,8 +61,9 @@ struct TerbitTabBarView: View {
                                 HistoryDetailsView()
                             }
                         }
-
+                    
                 }
+                .toolbar(historyRouter.tabBarVisibility, for: .tabBar)
                 .environment(routineStore)
                 .environment(historyRouter)
                 
@@ -65,5 +74,5 @@ struct TerbitTabBarView: View {
 
 #Preview {
     TerbitTabBarView()
-    
+        .preferredColorScheme(.light)
 }

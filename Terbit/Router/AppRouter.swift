@@ -13,7 +13,23 @@ import SwiftUI
 @Observable
 
 class BaseRouter<T: Equatable> {
-    var path: [T] = []
+    var path: [T] = [] {
+        didSet {
+            if path.count == 0 && tabBarVisibility == .hidden {
+                turnOnTabBar()
+            }
+        }
+    }
+    
+    var tabBarVisibility: Visibility = .visible
+    
+    func turnOffTabBar() {
+            tabBarVisibility = .hidden
+    }
+    
+    func turnOnTabBar() {
+            tabBarVisibility = .visible
+    }
     
     func push(_ screen: T) {
         path.append(screen)

@@ -13,38 +13,29 @@ import SwiftData
 @main
 struct TerbitApp: App {
 
-    //
-        var sharedModelContainer: ModelContainer = {
-            let schema = Schema([
-                ActivityModel.self,
-                RoutineModel.self,
-                HistoryModel.self,
-                PreferenceModel.self
-            ])
-            let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-    
-            do {
-                return try ModelContainer(for: schema, configurations: [modelConfiguration])
-            } catch {
-                fatalError("Could not create ModelContainer: \(error)")
-            }
-        }()
+//        var sharedModelContainer: ModelContainer = {
+//            let schema = Schema([
+//                ActivityModel.self,
+//                RoutineModel.self,
+//                HistoryModel.self,
+//                PreferenceModel.self
+//            ])
+//            let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+//    
+//            do {
+//                return try ModelContainer(for: schema, configurations: [modelConfiguration])
+//            } catch {
+//                fatalError("Could not create ModelContainer: \(error)")
+//            }
+//        }()
     
     
     
     
     var body: some Scene {
         WindowGroup {
-            //            NavigationStack (path: $MyRoutineRouter.path) {
-            //                MyRoutineView()
-
-            //                
-            //            }
-            
             TerbitTabBarView()
-
-            
         }
-        .modelContainer(sharedModelContainer)
+//        .modelContainer(sharedModelContainer)
     }
 }

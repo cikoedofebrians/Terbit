@@ -6,6 +6,7 @@
 //
 
 let constantDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+let constantDaysInt = [1, 2, 3, 4, 5, 6, 7]
 
 let constantMorningRoutine: [MorningActivity] = [
     MorningActivity(

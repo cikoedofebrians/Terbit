@@ -8,10 +8,10 @@
 import SwiftUI
 
 enum ActivityDetailsType: Hashable {
-    case viewOnly(MorningActivity)
-    case add(MorningActivity)
+    case viewOnly(ActivityModel)
+    case add(ActivityModel)
     
-    var activity: MorningActivity {
+    var activity: ActivityModel {
         switch self {
         case    .viewOnly(let activity),
                 .add(let activity):
@@ -26,7 +26,7 @@ struct ActivityDetailsView: View {
     @Environment(RoutineStore.self) var routineStore
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     
-    var activity: MorningActivity {
+    var activity: ActivityModel {
         activityDetailsType.activity
     }
     
@@ -57,7 +57,7 @@ struct ActivityDetailsView: View {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                                     withAnimation {
                                         routineStore.selectedActivities.append(
-                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
+                                            RoutineModel(activity: activity, index: routineStore.selectedActivities.count)
                                         )
                                     }
                                 }
@@ -75,7 +75,7 @@ struct ActivityDetailsView: View {
                         }
                     }
                     
-                    Text(activity.description)
+                    Text(activity.desc)
                         .font(.body)
                         .foregroundStyle(.secondary)
                     Text("Instructions")
@@ -107,7 +107,7 @@ struct ActivityDetailsView: View {
 #Preview {
     NavigationStack {
         ActivityDetailsView(activityDetailsType: .add(constantMorningRoutine[1]))
-            .environment(RoutineStore())
+            .environment(RoutineStore(dataService: .shared))
             .environment(MyRoutineRouter())
     }
     

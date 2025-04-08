@@ -40,9 +40,7 @@ struct ActivityList: View {
                             myRoutineRouter.popUntil(.editRoutineView)
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                        routineStore.selectedActivities.append(
-                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
-                                        )
+                                routineStore.addActivity(activity)
                         
                             }
                         } label: {
@@ -69,6 +67,6 @@ struct ActivityList: View {
     NavigationStack {
         ActivityList()
             .environment(MyRoutineRouter())
-            .environment(RoutineStore())
+            .environment(RoutineStore(dataService: .shared))
     }
 }

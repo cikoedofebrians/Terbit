@@ -34,7 +34,7 @@ struct MyRoutineView: View {
 #Preview {
     NavigationStack {
         MyRoutineView()
-            .environment(RoutineStore())
+            .environment(RoutineStore(dataService: .shared))
             .environment(MyRoutineRouter())
     }
     

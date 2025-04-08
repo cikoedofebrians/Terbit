@@ -8,10 +8,10 @@
 let constantDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 let constantDaysInt = [1, 2, 3, 4, 5, 6, 7]
 
-let constantMorningRoutine: [MorningActivity] = [
-    MorningActivity(
+let constantMorningRoutine: [ActivityModel] = [
+    ActivityModel(
           title: "Set Focus",
-          description: "Start your morning with clarity and intention. By identifying what matters most today, you create direction and purpose. This small act helps you mentally prepare and reduces the overwhelm of a scattered to-do list.",
+          desc: "Start your morning with clarity and intention. By identifying what matters most today, you create direction and purpose. This small act helps you mentally prepare and reduces the overwhelm of a scattered to-do list.",
           instructions: [
               "Write down or say your top 3 priorities for today."
           ],
@@ -20,9 +20,9 @@ let constantMorningRoutine: [MorningActivity] = [
           images: ["SetFocus"],
           instructionDurations: [3]
       ),
-      MorningActivity(
+      ActivityModel(
           title: "Hydrate Gently",
-          description: "Drinking water or coffee first thing in the morning reawakens your body and mind. It refreshes you after a night of rest, supports digestion, and signals your system that the day is beginning.",
+          desc: "Drinking water or coffee first thing in the morning reawakens your body and mind. It refreshes you after a night of rest, supports digestion, and signals your system that the day is beginning.",
           instructions: [
               "Sip your water or coffee slowly and stay present with the moment."
           ],
@@ -31,9 +31,9 @@ let constantMorningRoutine: [MorningActivity] = [
           images: ["Hydrate"],
           instructionDurations: [60]
       ),
-      MorningActivity(
+      ActivityModel(
           title: "Stretch Your Body",
-          description: "Release the stiffness from sleep and long commutes with simple, restorative movements. A short stretch in the morning helps activate your muscles, improve posture, and invite ease into your body. These light motions can refresh your energy and prepare you to sit or stand with more comfort and awareness throughout the day.",
+          desc: "Release the stiffness from sleep and long commutes with simple, restorative movements. A short stretch in the morning helps activate your muscles, improve posture, and invite ease into your body. These light motions can refresh your energy and prepare you to sit or stand with more comfort and awareness throughout the day.",
           instructions: [
               "Sit tall, clasp hands behind your head, and arch your back while looking up.",
               "Hold the back of a chair, bend your knees, and lower into a gentle squat.",
@@ -50,9 +50,9 @@ let constantMorningRoutine: [MorningActivity] = [
 //          instructionDurations: [20, 30, 30, 20, 20, 20, 20, 20]
           instructionDurations: [3, 3, 3, 3, 3, 3, 3, 3]
       ),
-      MorningActivity(
+    ActivityModel(
           title: "Mindful Breathing",
-          description: "Intentional breathing calms the mind, lowers stress, and sharpens focus. Even one minute of conscious breathwork can create a sense of balance and control as you begin your workday.",
+          desc: "Intentional breathing calms the mind, lowers stress, and sharpens focus. Even one minute of conscious breathwork can create a sense of balance and control as you begin your workday.",
           instructions: [
               "Inhale for 4 seconds.",
               "Hold your breath for 4 seconds.",
@@ -91,9 +91,9 @@ let constantMorningRoutine: [MorningActivity] = [
           instructionDurations: [4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4]
           
       ),
-      MorningActivity(
+      ActivityModel(
           title: "Short Walk",
-          description: "A brief walk recharges your body and refreshes your senses. It promotes movement, supports circulation, and gives your mind space to breathe and reset before diving into tasks.",
+          desc: "A brief walk recharges your body and refreshes your senses. It promotes movement, supports circulation, and gives your mind space to breathe and reset before diving into tasks.",
           instructions: [
               "Walk slowly and observe your surroundings — the colors, sounds, and how your feet feel on the ground."
           ],

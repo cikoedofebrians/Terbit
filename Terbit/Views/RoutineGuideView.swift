@@ -19,7 +19,7 @@ struct RoutineGuideView: View {
     @State private var nextActivityIndex: Int = 0
     @State private var timer: Timer?
     
-    var selectedActivities: [ActivityRoutine] {
+    var selectedActivities: [RoutineModel] {
         routineStore.selectedActivities
     }
     
@@ -91,7 +91,7 @@ struct RoutineGuideView: View {
 #Preview {
     NavigationStack {
         RoutineGuideView()
-            .environment(RoutineStore())
+            .environment(RoutineStore(dataService: .shared))
             .environment(MyRoutineRouter())
     }
     

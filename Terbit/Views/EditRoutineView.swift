@@ -123,6 +123,6 @@ struct EditRoutineView: View {
     NavigationStack {
         EditRoutineView()
             .environment(MyRoutineRouter())
-            .environment(RoutineStore())
+            .environment(RoutineStore(dataService: .shared))
     }
 }

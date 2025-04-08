@@ -14,14 +14,13 @@ struct ActivityList: View {
     @Environment(\.modelContext) private var context
     
     @Query(sort: [SortDescriptor(\ActivityModel.name)]) private var activities: [ActivityModel]
-    
     @Query(sort: [SortDescriptor(\RoutineModel.index)]) private var routine: [RoutineModel]
     
     var body: some View {
         List {
             ForEach(activities, id: \.self) { activity in
                 Button {
-                        myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
+                    myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
                 } label: {
                     HStack(spacing: 0) {
                         Rectangle()

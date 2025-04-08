@@ -9,7 +9,7 @@ import SwiftData
 import Foundation
 
 @Model
-class PreferenceModel {
+class ScheduleModel {
     var hour: Date
     var daysRaw: String
 

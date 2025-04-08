@@ -50,7 +50,7 @@ struct EditRoutineView: View {
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                     Button  (role: .destructive){
                         withAnimation {
-                            routineStore.removeActivity(at: idx)
+                            routineStore.deleteRoutineModel(routineModel: routineStore.selectedActivities[idx])
                         }
                         
                     } label: {
@@ -62,13 +62,9 @@ struct EditRoutineView: View {
                 .moveDisabled(!editMode.isEditing)
                 
             }
-            
-            .onDelete { offsets in
-                print(offsets)
-            }
+            .onDelete { _ in }
             .onMove { from, to in
-                print(from)
-                print(to)
+                routineStore.reorderRoutineModel(from: from, to: to)
             }
             
         }

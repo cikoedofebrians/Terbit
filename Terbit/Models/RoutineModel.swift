@@ -10,7 +10,7 @@ import SwiftData
 @Model
 class RoutineModel {
     @Relationship var activity: ActivityModel
-    var index: Int
+    @Attribute var index: Int
 
     init(activity: ActivityModel, index: Int) {
         self.activity = activity

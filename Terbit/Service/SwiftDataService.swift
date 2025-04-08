@@ -7,6 +7,7 @@
 
 
 import SwiftData
+import Foundation
 
 class SwiftDataService {
     private let modelContainer: ModelContainer
@@ -22,22 +23,60 @@ class SwiftDataService {
         self.modelContext = modelContainer.mainContext
     }
     
-    
-    
-    func fetchRoutineModels()   -> [RoutineModel] {
-        do {
-            return try modelContext.fetch(FetchDescriptor<RoutineModel>())
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-    }
-    
-    func addRoutineModel(_ routineModel: RoutineModel) {
-        modelContext.insert(routineModel)
+    func save() {
         do {
             try modelContext.save()
         } catch {
             fatalError(error.localizedDescription)
         }
+    }
+    
+    
+    func updateRoutineModel(_ routineModel: RoutineModel, index: Int) {
+        routineModel.index = index
+        save()
+    }
+    
+    func fetchScheduleModel()  -> ScheduleModel {
+        do {
+            let scheduleModels = try modelContext.fetch(FetchDescriptor<ScheduleModel>())
+            if scheduleModels.isEmpty {
+                let scheduleModel = ScheduleModel(
+                    hour: Date(), days: []
+                )
+                addScheduleModel(scheduleModel)
+                return scheduleModel
+            } else {
+                return scheduleModels[0]
+            }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    
+    func addScheduleModel(_ scheduleModel: ScheduleModel) {
+        modelContext.insert(scheduleModel)
+        save()
+    }
+    
+    func fetchRoutineModels()   -> [RoutineModel] {
+        do {
+            return try modelContext.fetch(FetchDescriptor<RoutineModel>(
+                sortBy: [SortDescriptor(\.index)]
+            ))
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    func deleteRoutineModel(_ routineModel: RoutineModel) {
+        modelContext.delete(routineModel)
+        save()
+    }
+    
+    func addRoutineModel(_ routineModel: RoutineModel) {
+        modelContext.insert(routineModel)
+        save()
     }
 }

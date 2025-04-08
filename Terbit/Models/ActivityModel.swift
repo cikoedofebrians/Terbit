@@ -17,8 +17,6 @@ import SwiftData
 //    let duration: Int
 //}
 
-
-
 @Model
 class ActivityModel {
     var title: String
@@ -38,6 +36,7 @@ class ActivityModel {
         self.imagesString = images.joined(separator: "|||")
         self.instructionDurationsString = instructionDurations.map(String.init).joined(separator: ",")
     }
+
     
     
     var instructions: [String] {

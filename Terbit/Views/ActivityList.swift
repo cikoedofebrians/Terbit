@@ -38,7 +38,6 @@ struct ActivityList: View {
                         Spacer()
                         Button {
                             myRoutineRouter.popUntil(.editRoutineView)
-                            
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                                 routineStore.addActivity(activity)
                         

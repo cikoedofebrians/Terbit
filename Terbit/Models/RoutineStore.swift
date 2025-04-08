@@ -16,44 +16,53 @@ class RoutineStore {
     
     init(dataService: SwiftDataService) {
         self.dataService = dataService
+        self.scheduleModel = dataService.fetchScheduleModel()
+        self.selectedActivities = dataService.fetchRoutineModels()
     }
     
-    var selectedActivities: [RoutineModel] = [
-//        RoutineModel(activity: constantMorningRoutine[0], index: 0),
-//        RoutineModel(activity: constantMorningRoutine[2], index: 1),
-    ]
+    var selectedActivities: [RoutineModel] = []
+    var scheduleModel: ScheduleModel
     
-    
-    func fetchEverything()  {
-        fetchActivities()
-    }
     func removeActivityAt(index: Int) {
         selectedActivities.remove(at: index)
     }
     
-    var selectedDays: [String] = []
-    
-    var selectedTime: Date = Date()
-    
-    func fetchActivities()  {
-        selectedActivities = dataService.fetchRoutineModels()
-        print(selectedActivities)
+    func toggleDay(_ dayIndex: Int) {
+        scheduleModel.toggleDay(dayIndex)
+        dataService.save()
     }
+    
+    func toggleEveryDay() {
+        if  scheduleModel.days.count == constantDaysInt.count {
+            scheduleModel.daysString = ""
+        } else {
+            scheduleModel.daysString = "1,2,3,4,5,6,7"
+        }
+        dataService.save()
+    }
+        
     
     func addActivity(_ activity: ActivityModel) {
-        print("TEST")
         let routineModel = RoutineModel(activity: activity, index: selectedActivities.count)
         dataService.addRoutineModel(routineModel)
-        fetchActivities()
+        selectedActivities = dataService.fetchRoutineModels()
     }
     
-    func removeActivity(at index: Int) {
-        selectedActivities.remove(at: index)
+    func deleteRoutineModel(routineModel: RoutineModel) {
+        dataService.deleteRoutineModel(routineModel)
+        selectedActivities = dataService.fetchRoutineModels()
     }
     
-    func replaceActivity(at index: Int, with activity: RoutineModel) {
-        selectedActivities[index] = activity
+    func reorderRoutineModel(from sourceIndex: IndexSet, to destinationIndex: Int) {
+        selectedActivities.move(fromOffsets: sourceIndex, toOffset: destinationIndex)
+        for (i, routineModel) in selectedActivities.enumerated() {
+            routineModel.index = i
+            dataService.updateRoutineModel(routineModel, index: i)
+        }
+        dataService.save()
+        selectedActivities = dataService.fetchRoutineModels()
     }
+    
     
     func getTotalDuration() -> Int {
         return selectedActivities.reduce(0) { $0 + $1.activity.duration }

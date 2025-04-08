@@ -34,9 +34,6 @@ struct TerbitTabBarView: View {
                             }
                         }
                 }
-                .onAppear {
-                    routineStore.fetchEverything()
-                }
                 .toolbar(myRoutineRouter.tabBarVisibility, for: .tabBar)
                 .environment(routineStore)
                 .environment(myRoutineRouter)

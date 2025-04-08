@@ -15,43 +15,56 @@ public struct TodayCompView: View {
     
     
     public var body: some View {
-        Section ("Today Activity (🔥 2 DAYS STREAK)"){
-            HStack {
-                Text("Total Duration")
-                Spacer()
+        Section ("Today Activities"){
+            if routineStore.selectedActivities.isEmpty {
+                    Text("You haven't set any activity yet.\nGo to 'Manage' to set your activity")
+                        .multilineTextAlignment(.center)
+            } else {
                 HStack {
-                    Image(systemName: "timer")
-                    Text("\(routineStore.getTotalDuration()) min")
-                }
-                .foregroundStyle(.secondary)
-            }
-            
-            
-            ForEach(routineStore.selectedActivities, id: \.self) { routineActivity in
-                Button {
-                    myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
-                } label: {
+                    Text("Total Duration")
+                    Spacer()
                     HStack {
-                        Text("\(routineActivity.index + 1)")
-                            .foregroundStyle(.secondary)
-                            .padding(.trailing, 12)
-                        VStack (alignment: .leading, spacing: 6){
-                            Text(routineActivity.activity.title)
-                            HStack {
-                                Image(systemName: "timer")
-                                Text("\(routineActivity.activity.duration) mins")
-                            }
-                            .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.secondary)
-                        
+                        Image(systemName: "timer")
+                        Text("\(routineStore.getTotalDuration()) min")
                     }
+                    .foregroundStyle(.secondary)
                 }
-                .tint(.primary)
+                
+                
+                ForEach(routineStore.selectedActivities, id: \.self) { routineActivity in
+                    Button {
+                        myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
+                    } label: {
+                        HStack {
+                            Text("\(routineActivity.index + 1)")
+                                .foregroundStyle(.secondary)
+                                .padding(.trailing, 12)
+                            VStack (alignment: .leading, spacing: 6){
+                                Text(routineActivity.activity.title)
+                                HStack {
+                                    Image(systemName: "timer")
+                                    Text("\(routineActivity.activity.duration) mins")
+                                }
+                                .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.secondary)
+                            
+                        }
+                    }
+                    .tint(.primary)
+                }
             }
             
         }
+        
     }
+}
+
+
+#Preview {
+    TodayCompView()
+        .environment(MyRoutineRouter())
+        .environment(RoutineStore(dataService: .shared))
 }

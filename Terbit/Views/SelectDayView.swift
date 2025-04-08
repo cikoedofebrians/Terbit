@@ -13,17 +13,13 @@ struct SelectDayView: View {
     @State var selectedDays: [String] = []
     var body: some View {
         List {
-            ForEach(constantDays, id: \.self) { day in
+            ForEach(constantDaysInt.indices, id: \.self) { dayIndex in
                 Button {
-                    if (routineStore.selectedDays.contains(day)) {
-                        routineStore.selectedDays.removeAll { $0 == day }
-                    } else {
-                        routineStore.selectedDays.append(day)
-                    }
+                    routineStore.toggleDay(constantDaysInt[dayIndex])
                 } label: {
                     HStack {
-                        Text(day)
-                        if routineStore.selectedDays.contains(day) {
+                        Text(constantDays[dayIndex])
+                        if routineStore.scheduleModel.days.contains(constantDaysInt[dayIndex]) {
                             Spacer()
                             Image(systemName: "checkmark")
                                 .foregroundStyle(.green)
@@ -33,8 +29,22 @@ struct SelectDayView: View {
                     
                 }
                 .tint(.primary)
-                
-                
+               
+
+            }
+            Button {
+                routineStore.toggleEveryDay()
+            } label: {
+                HStack {
+                    Text("Every day")
+                        .tint(.primary)
+                    if routineStore.scheduleModel.days.count == constantDaysInt.count {
+                        Spacer()
+                        Image(systemName: "checkmark")
+                            .foregroundStyle(.green)
+                        
+                    }
+                }
             }
         }
         .navigationTitle("Day")

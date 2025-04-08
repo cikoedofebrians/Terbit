@@ -23,7 +23,7 @@ struct MyRoutineView: View {
                 Button {
                     myRoutineRouter.push(.editRoutineView)
                 } label: {
-                    Text("Manage Routine")
+                    Text("Manage")
                 }
                 
             }
@@ -31,10 +31,11 @@ struct MyRoutineView: View {
     }
 }
 
-//#Preview {
-//    NavigationStack {
-//        MyRoutineView()
-//            .environment(RoutineStore())
-//            .environment(MyRoutineRouter())
-//    }
-//}
+#Preview {
+    NavigationStack {
+        MyRoutineView()
+            .environment(RoutineStore(dataService: .shared))
+            .environment(MyRoutineRouter())
+    }
+    
+}

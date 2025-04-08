@@ -103,7 +103,7 @@ struct HistoryDetailsView: View {
 #Preview {
     NavigationStack {
         HistoryDetailsView()
-            .environment(RoutineStore())
+            .environment(RoutineStore(dataService: .shared))
             .environment(MyRoutineRouter())
     }
 }

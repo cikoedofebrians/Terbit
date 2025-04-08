@@ -39,6 +39,7 @@
 			children = (
 				BF3D78FF2D93EFBB00113E00 /* .gitignore */,
 				BF3D78BD2D932C8B00113E00 /* Terbit */,
+				BFEE49EB2DA4F60900601039 /* New Group */,
 				BF7124A22D91230D00F3B913 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -49,6 +50,13 @@
 				BF7124A12D91230D00F3B913 /* Terbit.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BFEE49EB2DA4F60900601039 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

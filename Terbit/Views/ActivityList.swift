@@ -22,13 +22,16 @@ struct ActivityList: View {
                 Button {
                     myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
                 } label: {
-                    HStack(spacing: 0) {
-                        Rectangle()
-                            .frame(width: 64, height: 64)
-                            .foregroundStyle(.gray.opacity(0.3))
+                    HStack (spacing: 0) {
+                        Image(systemName: activity.logoImage)
+                            .font(.system(size: 32))
+                            .frame(width: 42, alignment: .center)
                             .padding(.trailing, 16)
+                            .foregroundStyle(
+                                LinearGradient(colors: [Color.red, Color.blue], startPoint: .leading, endPoint: .trailing)
+                            )
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(activity.name)
+                            Text(activity.title)
                             HStack {
                                 Image(systemName: "timer")
                                 Text("\(activity.duration) min")
@@ -38,15 +41,17 @@ struct ActivityList: View {
                         Spacer()
                         Button {
                             addToRoutine(activity)
+
 //                            myRoutineRouter.popUntil(.editRoutineView)
 //                            
 //                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-//                                        routineStore.selectedActivities.append(
-//                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
-//                                        )
+//                                routineStore.addActivity(activity)
+//                        
 //                            }
                         } label: {
                             Text("Add")
+                                .fontWeight(.semibold)
+                                .padding(.horizontal, 6)
                         }
                         .disabled(routine.contains(where: { $0.activity.id == activity.id }))
                         .buttonStyle(.borderedProminent)
@@ -87,10 +92,10 @@ struct ActivityList: View {
         }
 }
 
-//#Preview {
-//    NavigationStack {
-//        ActivityList()
-//            .environment(MyRoutineRouter())
-//            .environment(RoutineStore())
-//    }
-//}
+#Preview {
+    NavigationStack {
+        ActivityList()
+            .environment(MyRoutineRouter())
+            .environment(RoutineStore(dataService: .shared))
+    }
+}

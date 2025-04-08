@@ -87,7 +87,7 @@ struct HistoryItemModel: (Identifiable) {
 #Preview {
     NavigationStack {
         HistoryListView()
-            .environment(RoutineStore())
+            .environment(RoutineStore(dataService: .shared))
             .environment(MyRoutineRouter())
     }
 }

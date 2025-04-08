@@ -1,9 +1,9 @@
-//
-//  Routine.swift
+//  ActivityRoutine.swift
 //  Terbit
 //
-//  Created by Umar Abdul Azis on 05/04/25.
+//  Created by Ciko Edo Febrian on 25/03/25.
 //
+
 import SwiftData
 
 @Model

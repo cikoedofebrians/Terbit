@@ -40,9 +40,11 @@ struct SelectDayView: View {
         }
 }
 
-//#Preview {
-//    NavigationStack {
-//        SelectDayView()
-//    }
-//    .environment(RoutineStore())
-//}
+#Preview {
+    NavigationStack {
+        SelectDayView()
+        
+    }
+    .environment(RoutineStore(dataService: .shared))
+
+}

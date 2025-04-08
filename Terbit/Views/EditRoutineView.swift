@@ -24,13 +24,18 @@ struct EditRoutineView: View {
                     if editMode == .inactive {
                         myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
                     }
+
                 } label: {
                     HStack (spacing: 16){
-                        Rectangle()
-                            .frame(width: 64, height: 64)
-                            .foregroundStyle(.gray.opacity(0.5))
+                        Image(systemName: routineActivity.activity.logoImage)
+                            .font(.system(size: 32))
+                            .frame(width: 42, alignment: .center)
+                            .padding(.trailing, 16)
+                            .foregroundStyle(
+                                LinearGradient(colors: [Color.red, Color.blue], startPoint: .leading, endPoint: .trailing)
+                            )
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(routineActivity.activity.name)
+                            Text(routineActivity.activity.title)
                             HStack {
                                 Image(systemName: "timer")
                                 Text("\(routineActivity.activity.duration) min")
@@ -42,6 +47,7 @@ struct EditRoutineView: View {
                             Image(systemName: "chevron.right")
                                 .foregroundStyle(.secondary)
                         }
+                        
                     }
                     .tint(.primary)
                 }
@@ -50,6 +56,7 @@ struct EditRoutineView: View {
                         withAnimation {
                             deleteActivity(at: IndexSet(integer: idx))
                         }
+                        
                     } label: {
                         Image(systemName: "trash")
                             .foregroundStyle(.white)
@@ -69,22 +76,17 @@ struct EditRoutineView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 HStack(spacing: 0) {
-                    GeometryReader { proxy in
-                        Button {
-                            withAnimation {
-                                editMode = editMode.isEditing ? .inactive : .active
+                    Button {
+                        withAnimation {
+                            if editMode.isEditing {
+                                editMode = .inactive
+                            } else {
+                                editMode = .active
                             }
-                        } label: {
-                            Text(editMode.isEditing ? "Done" : "Edit")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .padding(.vertical, 6)
-                                .foregroundStyle(.white)
-                                .frame(width: proxy.size.width)
-                                .background {
-                                    Capsule().fill(Color.accentColor)
-                                }
                         }
+                        
+                    } label: {
+                        Text(editMode.isEditing ? "Done" : "Edit")
                     }
                     .padding(.trailing, 8)
                     
@@ -96,14 +98,17 @@ struct EditRoutineView: View {
                                 .font(.caption)
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.white)
-                                .padding(6)
+                                .padding(8)
                                 .background {
                                     Circle().fill(Color.accentColor)
                                 }
                         }
                     }
+                    
+                    
+                    
+                    
                 }
-                .frame(width: 100)
             }
         }
     }
@@ -135,14 +140,13 @@ struct EditRoutineView: View {
             try modelContext.save()
         } catch {
             print("Failed to save context: \(error.localizedDescription)")
-        }
     }
 }
 
-//#Preview {
-//    NavigationStack {
-//        EditRoutineView()
-//            .environment(MyRoutineRouter())
-//            .environment(RoutineStore())
-//    }
-//}
+#Preview {
+    NavigationStack {
+        EditRoutineView()
+            .environment(MyRoutineRouter())
+            .environment(RoutineStore(dataService: .shared))
+    }
+}

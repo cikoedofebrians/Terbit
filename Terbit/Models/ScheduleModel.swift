@@ -1,8 +1,7 @@
-//
-//  Preferences.swift
+//  ScheduleModel.swift
 //  Terbit
 //
-//  Created by Umar Abdul Azis on 05/04/25.
+//  Created by Ciko Edo Febrian on 08/04/25.
 //
 
 import SwiftData
@@ -15,15 +14,15 @@ class ScheduleModel {
 
     init(hour: Date, days: [String]) {
         self.hour = hour
-        self.daysRaw = days.joined(separator: ",")
+        self.daysRaw = days.joined(separator: ", ")
     }
 
     var days: [String] {
         get {
-            daysRaw.components(separatedBy: ",").filter { !$0.isEmpty }
+            daysRaw.components(separatedBy: ", ").filter { !$0.isEmpty }
         }
         set {
-            daysRaw = newValue.joined(separator: ",")
+            daysRaw = newValue.joined(separator: ", ")
         }
     }
 }

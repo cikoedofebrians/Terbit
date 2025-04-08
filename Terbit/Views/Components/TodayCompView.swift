@@ -39,7 +39,7 @@ public struct TodayCompView: View {
                             .foregroundStyle(.secondary)
                             .padding(.trailing, 12)
                         VStack (alignment: .leading, spacing: 6){
-                            Text(routineActivity.activity.name)
+                            Text(routineActivity.activity.title)
                             HStack {
                                 Image(systemName: "timer")
                                 Text("\(routineActivity.activity.duration) mins")

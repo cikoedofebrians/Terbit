@@ -45,7 +45,7 @@ struct ActivityDetailsView: View {
                     .font(.headline)
                     .foregroundStyle(.secondary)
                     HStack {
-                        Text(activity.name)
+                        Text(activity.title)
                             .font(.title)
                             .bold()
                         Spacer()
@@ -57,17 +57,19 @@ struct ActivityDetailsView: View {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                                     withAnimation {
                                         routineStore.selectedActivities.append(
-                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
+                                            RoutineModel(activity: activity, index: routineStore.selectedActivities.count)
                                         )
                                     }
                                 }
                             } label: {
                                 Text("Add")
+                                    .fontWeight(.semibold)
+                                    .font(.body)
                             }
                             .buttonBorderShape(.capsule)
                             .buttonStyle(.borderedProminent)
                             .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
-
+                            
                         case .viewOnly(_):
                             EmptyView()
                         }
@@ -80,10 +82,16 @@ struct ActivityDetailsView: View {
                         .font(.title2)
                         .bold()
                         .padding(.top, 16)
-                    ForEach(Array(activity.instructions.enumerated()), id: \.offset) { idx, instruction in
-                        Text("\(idx + 1). \(instruction)")
+                    if activity.instructions.count == 1 {
+                        Text(activity.instructions[0])
                             .font(.body)
                             .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(Array(activity.instructions.enumerated()), id: \.offset) { idx, instruction in
+                            Text("\(idx + 1). \(instruction)")
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -91,16 +99,16 @@ struct ActivityDetailsView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(activity.name)
+        .navigationTitle(activity.title)
         
     }
 }
 
-//#Preview {
-//    NavigationStack {
-//        ActivityDetailsView(activityDetailsType: .add(constantMorningRoutine[1]))
-//            .environment(RoutineStore())
-//            .environment(MyRoutineRouter())
-//    }
-//    
-//}
+#Preview {
+    NavigationStack {
+        ActivityDetailsView(activityDetailsType: .add(constantMorningRoutine[1]))
+            .environment(RoutineStore(dataService: .shared))
+            .environment(MyRoutineRouter())
+    }
+    
+}

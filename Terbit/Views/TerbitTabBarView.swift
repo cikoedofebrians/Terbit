@@ -10,7 +10,7 @@ import SwiftUI
 struct TerbitTabBarView: View {
     @State var myRoutineRouter = MyRoutineRouter()
     @State var historyRouter = HistoryRouter()
-    @State var routineStore: RoutineStore = RoutineStore()
+    @State var routineStore: RoutineStore = RoutineStore(dataService: SwiftDataService.shared)
     
     var body: some View {
         TabView {
@@ -34,16 +34,9 @@ struct TerbitTabBarView: View {
                             }
                         }
                 }
-//                .task {
-//                    if (myRoutineRouter.path.count == 0) {
-//                        myRoutineRouter.turnOnTabBar()
-//                    }
-//                }
-//                .onChange(of: myRoutineRouter.path, { _, __ in
-//                    if (myRoutineRouter.path.count == 0) {
-//                        myRoutineRouter.turnOnTabBar()
-//                    }
-//                })
+                .onAppear {
+                    routineStore.fetchEverything()
+                }
                 .toolbar(myRoutineRouter.tabBarVisibility, for: .tabBar)
                 .environment(routineStore)
                 .environment(myRoutineRouter)

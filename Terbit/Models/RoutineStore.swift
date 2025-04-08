@@ -11,11 +11,22 @@ import SwiftUI
 
 @Observable
 class RoutineStore {
-    var selectedActivities: [ActivityRoutine] = [
-        ActivityRoutine(activity: constantMorningRoutine[0], index: 0),
-        ActivityRoutine(activity: constantMorningRoutine[1], index: 1),
+    
+    let dataService: SwiftDataService
+    
+    init(dataService: SwiftDataService) {
+        self.dataService = dataService
+    }
+    
+    var selectedActivities: [RoutineModel] = [
+//        RoutineModel(activity: constantMorningRoutine[0], index: 0),
+//        RoutineModel(activity: constantMorningRoutine[2], index: 1),
     ]
     
+    
+    func fetchEverything()  {
+        fetchActivities()
+    }
     func removeActivityAt(index: Int) {
         selectedActivities.remove(at: index)
     }
@@ -24,15 +35,23 @@ class RoutineStore {
     
     var selectedTime: Date = Date()
     
-    func addActivity(_ activity: ActivityRoutine) {
-        selectedActivities.append(activity)
+    func fetchActivities()  {
+        selectedActivities = dataService.fetchRoutineModels()
+        print(selectedActivities)
+    }
+    
+    func addActivity(_ activity: ActivityModel) {
+        print("TEST")
+        let routineModel = RoutineModel(activity: activity, index: selectedActivities.count)
+        dataService.addRoutineModel(routineModel)
+        fetchActivities()
     }
     
     func removeActivity(at index: Int) {
         selectedActivities.remove(at: index)
     }
     
-    func replaceActivity(at index: Int, with activity: ActivityRoutine) {
+    func replaceActivity(at index: Int, with activity: RoutineModel) {
         selectedActivities[index] = activity
     }
     

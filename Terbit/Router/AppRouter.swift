@@ -1,5 +1,5 @@
 //
-//  AppRouter.swift
+//  MyRoutineRouter.swift
 //  Terbit
 //
 //  Created by Ciko Edo Febrian on 24/03/25.
@@ -9,21 +9,39 @@ import Foundation
 import Observation
 import SwiftUI
 
+
 @Observable
-class AppRouter {
-    var path: [TerbitScreenEnum] = []
+
+class BaseRouter<T: Equatable> {
+    var path: [T] = [] {
+        didSet {
+            if path.count == 0 && tabBarVisibility == .hidden {
+                turnOnTabBar()
+            }
+        }
+    }
     
-    func push(_ screen: TerbitScreenEnum) {
+    var tabBarVisibility: Visibility = .visible
+    
+    func turnOffTabBar() {
+            tabBarVisibility = .hidden
+    }
+    
+    func turnOnTabBar() {
+            tabBarVisibility = .visible
+    }
+    
+    func push(_ screen: T) {
         path.append(screen)
     }
     
-    func pop(_ screen: TerbitScreenEnum) {
+    func pop(_ screen: T) {
         if (path.count > 1) {
             path.removeLast()
         }
     }
     
-    func popUntil(_ screen: TerbitScreenEnum) {
+    func popUntil(_ screen: T) {
         while (path.last != screen) {
             path.removeLast()
         }
@@ -33,3 +51,9 @@ class AppRouter {
         path.removeAll()
     }
 }
+
+
+
+class MyRoutineRouter: BaseRouter<MyRoutineViewEnum> {}
+
+class HistoryRouter: BaseRouter<HistoryViewEnum> {}

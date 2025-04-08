@@ -47,6 +47,6 @@ struct SelectDayView: View {
         SelectDayView()
         
     }
-    .environment(RoutineStore())
+    .environment(RoutineStore(dataService: .shared))
 
 }

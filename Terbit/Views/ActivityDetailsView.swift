@@ -8,15 +8,13 @@
 import SwiftUI
 
 enum ActivityDetailsType: Hashable {
-    case viewOnly(MorningActivity)
-    case add(MorningActivity)
-    case replace(MorningActivity, Int)
+    case viewOnly(ActivityModel)
+    case add(ActivityModel)
     
-    var activity: MorningActivity {
+    var activity: ActivityModel {
         switch self {
         case    .viewOnly(let activity),
-                .add(let activity),
-                .replace(let activity, _):
+                .add(let activity):
             return activity
         }
     }
@@ -26,9 +24,9 @@ enum ActivityDetailsType: Hashable {
 struct ActivityDetailsView: View {
     let activityDetailsType: ActivityDetailsType
     @Environment(RoutineStore.self) var routineStore
-    @Environment(AppRouter.self) var appRouter
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     
-    var activity: MorningActivity {
+    var activity: ActivityModel {
         activityDetailsType.activity
     }
     
@@ -47,7 +45,7 @@ struct ActivityDetailsView: View {
                     .font(.headline)
                     .foregroundStyle(.secondary)
                     HStack {
-                        Text(activity.name)
+                        Text(activity.title)
                             .font(.title)
                             .bold()
                         Spacer()
@@ -55,52 +53,45 @@ struct ActivityDetailsView: View {
                         switch activityDetailsType {
                         case .add:
                             Button {
-                                appRouter.popUntil(.editRoutineView)
+                                myRoutineRouter.popUntil(.editRoutineView)
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                                     withAnimation {
                                         routineStore.selectedActivities.append(
-                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
+                                            RoutineModel(activity: activity, index: routineStore.selectedActivities.count)
                                         )
                                     }
                                 }
                             } label: {
                                 Text("Add")
+                                    .fontWeight(.semibold)
+                                    .font(.body)
                             }
                             .buttonBorderShape(.capsule)
                             .buttonStyle(.borderedProminent)
                             .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
-
-                        case .replace(_, let index):
-                            Button {
-                                appRouter.popUntil(.editRoutineView)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                    withAnimation {
-                                        routineStore.selectedActivities[index] =
-                                            ActivityRoutine(activity: activity, index: index)
-                                    }
-                                }
-                            } label: {
-                                Text("Replace")
-                            }
-                            .buttonBorderShape(.capsule)
-                            .buttonStyle(.borderedProminent)
-                            .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
+                            
                         case .viewOnly(_):
                             EmptyView()
                         }
                     }
                     
-                    Text(activity.description)
+                    Text(activity.desc)
                         .font(.body)
                         .foregroundStyle(.secondary)
                     Text("Instructions")
                         .font(.title2)
                         .bold()
                         .padding(.top, 16)
-                    ForEach(Array(activity.instructions.enumerated()), id: \.offset) { idx, instruction in
-                        Text("\(idx + 1). \(instruction)")
+                    if activity.instructions.count == 1 {
+                        Text(activity.instructions[0])
                             .font(.body)
                             .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(Array(activity.instructions.enumerated()), id: \.offset) { idx, instruction in
+                            Text("\(idx + 1). \(instruction)")
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -108,7 +99,7 @@ struct ActivityDetailsView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(activity.name)
+        .navigationTitle(activity.title)
         
     }
 }
@@ -116,8 +107,8 @@ struct ActivityDetailsView: View {
 #Preview {
     NavigationStack {
         ActivityDetailsView(activityDetailsType: .add(constantMorningRoutine[1]))
-            .environment(RoutineStore())
-            .environment(AppRouter())
+            .environment(RoutineStore(dataService: .shared))
+            .environment(MyRoutineRouter())
     }
     
 }

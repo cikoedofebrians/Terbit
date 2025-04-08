@@ -9,21 +9,29 @@ import SwiftUI
 
 struct EditRoutineView: View {
     
-    @Environment(AppRouter.self) var appRouter
+    @State var editMode: EditMode = .inactive
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
     var body: some View {
-        Form {
+        List {
             ForEach(Array(routineStore.selectedActivities.enumerated()), id: \.1) { idx, routineActivity in
                 Button {
-                    appRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
+                    if editMode == .inactive {
+                        myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
+                    }
+                    
                 } label: {
                     HStack (spacing: 16){
-                        Rectangle()
-                            .frame(width: 64, height: 64)
-                            .foregroundStyle(.gray.opacity(0.5))
+                        Image(systemName: routineActivity.activity.logoImage)
+                            .font(.system(size: 32))
+                            .frame(width: 42, alignment: .center)
+                            .padding(.trailing, 16)
+                            .foregroundStyle(
+                                LinearGradient(colors: [Color.red, Color.blue], startPoint: .leading, endPoint: .trailing)
+                            )
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(routineActivity.activity.name)
+                            Text(routineActivity.activity.title)
                             HStack {
                                 Image(systemName: "timer")
                                 Text("\(routineActivity.activity.duration) min")
@@ -31,34 +39,32 @@ struct EditRoutineView: View {
                             .foregroundStyle(.secondary)
                         }
                         Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.secondary)
+                        if !editMode.isEditing {
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.secondary)
+                        }
+                        
                     }
                     .tint(.primary)
                 }
-                .swipeActions(edge: .trailing) {
-                    Button {
-                        appRouter.push(.activityListView(.replace(idx)))
-                    } label: {
-                        Image(systemName: "arrow.left.arrow.right")
-                    }
-                    .tint(.green)
-                    
-                    Button (role: .destructive){
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button  (role: .destructive){
                         withAnimation {
-                            if let index = routineStore.selectedActivities.firstIndex(where: { $0.activity.id == routineActivity.activity.id }) {
-                                routineStore.removeActivityAt(index: index)
-                                print(index)
-                            }
-                            
+                            routineStore.removeActivity(at: idx)
                         }
+                        
                     } label: {
-                        Image(systemName: "trash.fill")
+                        Image(systemName: "trash")
+                            .foregroundStyle(.white)
                     }
                     .tint(.red)
-                    
-                    
                 }
+                .moveDisabled(!editMode.isEditing)
+                
+            }
+            
+            .onDelete { offsets in
+                print(offsets)
             }
             .onMove { from, to in
                 print(from)
@@ -66,15 +72,48 @@ struct EditRoutineView: View {
             }
             
         }
+        
+        .environment(\.editMode, $editMode)
         .navigationTitle("Manage Routine")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    appRouter.push(.activityListView(.add))
-                } label: {
-                    Image(systemName: "plus")
+                HStack(spacing: 0) {
+                    
+                    Button {
+                        withAnimation {
+                            if editMode.isEditing {
+                                editMode = .inactive
+                            } else {
+                                editMode = .active
+                            }
+                        }
+                        
+                    } label: {
+                        Text(editMode.isEditing ? "Done" : "Edit")
+                    }
+                    .padding(.trailing, 8)
+                    
+                    
+                    if !editMode.isEditing {
+                        Button {
+                            myRoutineRouter.push(.activityListView)
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                                .padding(8)
+                                .background {
+                                    Circle()
+                                        .fill(Color.accentColor)
+                                }
+                        }
+                    }
+                    
+                    
+                    
+                    
                 }
-                
             }
         }
     }
@@ -83,8 +122,7 @@ struct EditRoutineView: View {
 #Preview {
     NavigationStack {
         EditRoutineView()
-        
-            .environment(AppRouter())
-            .environment(RoutineStore())
+            .environment(MyRoutineRouter())
+            .environment(RoutineStore(dataService: .shared))
     }
 }

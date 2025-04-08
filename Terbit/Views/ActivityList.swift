@@ -7,35 +7,28 @@
 
 import SwiftUI
 
-enum ActivityListType: Equatable, Hashable {
-    case add
-    case replace(Int)
-}
 
 struct ActivityList: View {
-    let activityListType: ActivityListType
-    
-    @Environment(AppRouter.self) var appRouter
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
     var body: some View {
         List {
             ForEach(constantMorningRoutine, id: \.self) { activity in
                 Button {
-                    switch activityListType {
-                    case .add:
-                        appRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
-                    case .replace(let idx):
-                        appRouter.push(.activityDetailsView(ActivityDetailsType.replace(activity, idx)))
-                    }
+                        myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
+                    
                 } label: {
                     HStack (spacing: 0) {
-                        Rectangle()
-                            .frame(width: 64, height: 64)
-                            .foregroundStyle(.gray.opacity(0.3))
+                        Image(systemName: activity.logoImage)
+                            .font(.system(size: 32))
+                            .frame(width: 42, alignment: .center)
                             .padding(.trailing, 16)
+                            .foregroundStyle(
+                                LinearGradient(colors: [Color.red, Color.blue], startPoint: .leading, endPoint: .trailing)
+                            )
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(activity.name)
+                            Text(activity.title)
                             HStack {
                                 Image(systemName: "timer")
                                 Text("\(activity.duration) min")
@@ -44,26 +37,16 @@ struct ActivityList: View {
                         }
                         Spacer()
                         Button {
-                            appRouter.popUntil(.editRoutineView)
+                            myRoutineRouter.popUntil(.editRoutineView)
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                switch activityListType {
-                                case .add:
-                                    withAnimation {
-                                        routineStore.selectedActivities.append(
-                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
-                                        )
-                                    }
-                                case .replace(let index):
-                                    withAnimation {
-                                        routineStore.selectedActivities[index] =
-                                        ActivityRoutine(activity: activity, index: index)
-                                    }
-                                    
-                                }
+                                routineStore.addActivity(activity)
+                        
                             }
                         } label: {
-                            Text(activityListType == ActivityListType.add ? "Add" : "Replace" )
+                            Text("Add")
+                                .fontWeight(.semibold)
+                                .padding(.horizontal, 6)
                         }
                         .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
                         .buttonStyle(.borderedProminent)
@@ -82,8 +65,8 @@ struct ActivityList: View {
 
 #Preview {
     NavigationStack {
-        ActivityList(activityListType: .add)
-            .environment(AppRouter())
-            .environment(RoutineStore())
+        ActivityList()
+            .environment(MyRoutineRouter())
+            .environment(RoutineStore(dataService: .shared))
     }
 }

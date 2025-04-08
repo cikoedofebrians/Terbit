@@ -14,10 +14,12 @@ import Foundation
 class ScheduleModel {
     @Attribute var hour: Date
     @Attribute var daysString: String
+    @Attribute var maxDuration: Int
 
-    init(hour: Date, days: [Int]) {
+    init(hour: Date, days: [Int], maxDuration: Int) {
         self.hour = hour
         self.daysString = days.map(String.init).joined(separator: ",")
+        self.maxDuration = maxDuration
     }
 
     var days: [Int] {

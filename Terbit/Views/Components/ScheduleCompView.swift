@@ -12,13 +12,32 @@ public struct ScheduleCompView: View {
     @Environment(RoutineStore.self) var routineStore
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     
+    let notify = NotificationHandler()
+
+    // Create allowed max duration only between 00:00 and 00:30
+    var allowedRange: ClosedRange<Date> {
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: Date()) // 00:00
+        let end = calendar.date(byAdding: .minute, value: 30, to: start)!
+        return start...end
+    }
+    
+    // For date picker in Maximum Duration
+    @State private var timeStart = Date()
+    
+    
     public var body: some View {
         @Bindable var routineStore = routineStore
+        
         Section("Schedule") {
             HStack {
                 DatePicker("Hour", selection: $routineStore.scheduleModel.hour, displayedComponents: .hourAndMinute)
                     .onChange(of: routineStore.scheduleModel.hour) { oldValue, newValue in
                         routineStore.dataService.save()
+                        notify.removeAllNotifications()
+                        let hour = Calendar.current.component(.hour, from: newValue)
+                        let minutes = Calendar.current.component(.minute, from: newValue)
+                        notify.scheduleNotification(hour: hour, minutes: minutes, weekdays: routineStore.scheduleModel.days)
                     }
             }
             
@@ -40,6 +59,49 @@ public struct ScheduleCompView: View {
             }
             .tint(.primary)
             
+            HStack {
+                DatePicker("Max. Duration",
+                           selection:$timeStart,
+                           in: allowedRange,
+                           displayedComponents: [.hourAndMinute])
+                    .onChange(of: timeStart) { _, newValue in
+                        let calendar = Calendar.current
+                        let startOfDay = calendar.startOfDay(for: newValue)
+                        let components = calendar.dateComponents([.minute], from: calendar.startOfDay(for: startOfDay), to: newValue)
+                        routineStore.scheduleModel.maxDuration = components.minute ?? 0
+                        routineStore.dataService.save()
+                        
+                    }
+                    
+            }
+            
+            .onAppear {
+                let calendar = Calendar.current
+                
+                //Setup notification
+                notify.askForNotificationPermission()
+                let hour = calendar.component(.hour, from: routineStore.scheduleModel.hour)
+                let minutes = calendar.component(.minute, from: routineStore.scheduleModel.hour)
+                
+                notify.removeAllNotifications()
+                notify.scheduleNotification(hour: hour, minutes: minutes, weekdays: routineStore.scheduleModel.days)
+                
+                print("\(hour):\(minutes)")
+                
+                // Initialize timeStart based on the model value
+                let start = calendar.startOfDay(for: Date())
+                timeStart = calendar.date(byAdding: .minute,
+                                         value: routineStore.scheduleModel.maxDuration,
+                                         to: start) ?? start
+                
+                // for check activity duration
+                if routineStore.getTotalDuration() > routineStore.scheduleModel.maxDuration {
+                    print("You exceeded the maximum duration") // change this with alert or other action
+                } else if routineStore.getTotalDuration() <= routineStore.scheduleModel.maxDuration {
+                    print("still good") // only for testing
+                }
+
+            }
         }
     }
 }

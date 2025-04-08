@@ -42,7 +42,7 @@ class SwiftDataService {
             let scheduleModels = try modelContext.fetch(FetchDescriptor<ScheduleModel>())
             if scheduleModels.isEmpty {
                 let scheduleModel = ScheduleModel(
-                    hour: Date(), days: []
+                    hour: Date(), days: [], maxDuration: 0
                 )
                 addScheduleModel(scheduleModel)
                 return scheduleModel

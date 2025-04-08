@@ -8,12 +8,13 @@
 import SwiftUI
 
 import SwiftUI
+import AudioToolbox
 
 struct RoutineGuideView: View {
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
-    @State private var isGuidingActive = true
+    @State private var isGuidingActive = false
     @State private var timeRemaining = 5
     @State private var currentActivityIndex: Int = 0
     @State private var nextActivityIndex: Int = 0
@@ -34,12 +35,14 @@ struct RoutineGuideView: View {
                     timer.invalidate()
                 }
             } else {
+                AudioServicesPlaySystemSound(1159) // audio effect
                 withAnimation {
                     timeRemaining -= 1
                 }
             }
         }
     }
+    
     
     
     var body: some View {
@@ -71,6 +74,7 @@ struct RoutineGuideView: View {
                 }
                 .onAppear {
                     startTimer()
+                    AudioServicesPlaySystemSound(1113)
                 }
                 .onDisappear {
                     timer?.invalidate()
@@ -126,6 +130,8 @@ struct ActivityGuideView: View {
                     if (currentStepIndex + 1 == routineStore.selectedActivities[currentActivityIndex].activity.instructions.count) {
                         invalidateTimer()
                         isComplete = true
+                        // add complete sound here
+                        AudioServicesPlaySystemSound(1025)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
                             withAnimation {
                             if (currentActivityIndex + 1 ==
@@ -138,6 +144,7 @@ struct ActivityGuideView: View {
                             }
                         })
                     } else {
+                        AudioServicesPlaySystemSound(1113)
                         currentStepIndex += 1
                         currentStepDuration = routineStore.selectedActivities[currentActivityIndex].activity.instructionDurations[currentStepIndex]
                         totalStepDuration = currentStepDuration
@@ -204,6 +211,7 @@ struct ActivityGuideView: View {
             .padding(.horizontal, 24)
             .onAppear {
                 startTimer()
+                AudioServicesPlaySystemSound(1113)
             }.onDisappear {
                 invalidateTimer()
             }

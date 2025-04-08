@@ -14,6 +14,15 @@ public struct ScheduleCompView: View {
     
     public var body: some View {
         @Bindable var routineStore = routineStore
+        //       // Allow only between 00:00 and 00:30
+                var allowedRange: ClosedRange<Date> {
+                    let calendar = Calendar.current
+                    let start = calendar.startOfDay(for: Date()) // 00:00
+                    let end = calendar.date(byAdding: .minute, value: 30, to: start)!
+                    return start...end
+                }
+                
+                @State var timeStart = Calendar.current.startOfDay(for: Date())
         
         Section("Schedule") {
             HStack {
@@ -37,6 +46,13 @@ public struct ScheduleCompView: View {
             }
             .tint(.primary)
             
+            HStack {
+                DatePicker("Max. Duration",
+                           selection: $timeStart,
+                           in: allowedRange,
+                           displayedComponents: [.hourAndMinute])
+                    
+            }
         }
     }
 }

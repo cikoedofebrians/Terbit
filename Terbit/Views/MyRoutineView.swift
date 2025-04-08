@@ -11,9 +11,6 @@ struct MyRoutineView: View {
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
-//    @Environment(\.modelContext) private var modelContext
-//    @StateObject private var viewModel = MyRoutineViewModel()
-    
     var body: some View {
         Form {
             ScheduleCompView()
@@ -31,21 +28,13 @@ struct MyRoutineView: View {
                 
             }
         }
-//        .onAppear {
-//            viewModel.setContext(modelContext)
-//        }
     }
 }
 
 //#Preview {
-//    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-//    let container = try! ModelContainer(for: PreferenceModel.self, configurations: config)
-//    let vm = MyRoutineViewModel(context: container.mainContext)
-//    
-//    return NavigationStack {
-//        MyRoutineView(viewModel: vm)
+//    NavigationStack {
+//        MyRoutineView()
 //            .environment(RoutineStore())
 //            .environment(MyRoutineRouter())
-//            .modelContainer(container)
 //    }
 //}

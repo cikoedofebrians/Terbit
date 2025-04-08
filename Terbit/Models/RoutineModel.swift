@@ -4,7 +4,6 @@
 //
 //  Created by Umar Abdul Azis on 05/04/25.
 //
-import Foundation
 import SwiftData
 
 @Model

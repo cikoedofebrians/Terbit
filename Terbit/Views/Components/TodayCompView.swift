@@ -7,12 +7,15 @@
 
 
 import SwiftUI
+import SwiftData
 
 public struct TodayCompView: View {
     
     @Environment(RoutineStore.self) var routineStore
     @Environment(MyRoutineRouter.self) var myRoutineRouter
+    @Environment(\.modelContext) private var context
     
+    @Query(sort: [SortDescriptor(\RoutineModel.index)]) private var routine: [RoutineModel]
     
     public var body: some View {
         Section ("Today Activity (🔥 2 DAYS STREAK)"){
@@ -21,15 +24,15 @@ public struct TodayCompView: View {
                 Spacer()
                 HStack {
                     Image(systemName: "timer")
-                    Text("\(routineStore.getTotalDuration()) min")
+                    Text("\(totalDuration()) min")
                 }
                 .foregroundStyle(.secondary)
             }
             
             
-            ForEach(routineStore.selectedActivities, id: \.self) { routineActivity in
+            ForEach(routine, id: \.self) { routineActivity in
                 Button {
-                    myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
+//                    myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
                 } label: {
                     HStack {
                         Text("\(routineActivity.index + 1)")
@@ -51,7 +54,10 @@ public struct TodayCompView: View {
                 }
                 .tint(.primary)
             }
-            
         }
+    }
+    
+    private func totalDuration() -> Int {
+        routine.map { $0.activity.duration }.reduce(0, +)
     }
 }

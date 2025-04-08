@@ -6,19 +6,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct EditRoutineView: View {
-    
     @State var editMode: EditMode = .inactive
-    @Environment(MyRoutineRouter.self) var myRoutineRouter
-    @Environment(RoutineStore.self) var routineStore
     
+    @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var viewModel = EditRoutineViewModel()
+    
+    @Query(sort: [SortDescriptor(\RoutineModel.index)]) private var fetchedRoutine: [RoutineModel]
+    @State private var routine: [RoutineModel] = []
     
     var body: some View {
         List {
-            ForEach(Array(routineStore.selectedActivities.enumerated()), id: \.1) { idx, routineActivity in
+            ForEach(Array(routine.enumerated()), id: \.1) { idx, routineActivity in
                 Button {
                     if editMode == .inactive {
                         myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
@@ -41,14 +42,13 @@ struct EditRoutineView: View {
                             Image(systemName: "chevron.right")
                                 .foregroundStyle(.secondary)
                         }
-       
                     }
                     .tint(.primary)
                 }
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    Button  (role: .destructive){
+                    Button(role: .destructive) {
                         withAnimation {
-                            routineStore.removeActivity(at: idx)
+                            deleteActivity(at: IndexSet(integer: idx))
                         }
                     } label: {
                         Image(systemName: "trash")
@@ -57,19 +57,13 @@ struct EditRoutineView: View {
                     .tint(.red)
                 }
                 .moveDisabled(!editMode.isEditing)
-                
             }
-   
-            .onDelete { offsets in
-                print(offsets)
-            }
-            .onMove { from, to in
-                print(from)
-                print(to)
-            }
-            
+            .onMove(perform: moveActivity)
+            .onDelete(perform: deleteActivity)
         }
-
+        .onAppear {
+            routine = fetchedRoutine
+        }
         .environment(\.editMode, $editMode)
         .navigationTitle("Manage Routine")
         .toolbar {
@@ -78,13 +72,8 @@ struct EditRoutineView: View {
                     GeometryReader { proxy in
                         Button {
                             withAnimation {
-                                if editMode.isEditing {
-                                    editMode = .inactive
-                                } else {
-                                    editMode = .active
-                                }
+                                editMode = editMode.isEditing ? .inactive : .active
                             }
-
                         } label: {
                             Text(editMode.isEditing ? "Done" : "Edit")
                                 .font(.caption)
@@ -93,12 +82,12 @@ struct EditRoutineView: View {
                                 .foregroundStyle(.white)
                                 .frame(width: proxy.size.width)
                                 .background {
-                                    Capsule()
-                                        .fill(Color.accentColor)
+                                    Capsule().fill(Color.accentColor)
                                 }
                         }
                     }
                     .padding(.trailing, 8)
+                    
                     if !editMode.isEditing {
                         Button {
                             myRoutineRouter.push(.activityListView)
@@ -107,24 +96,45 @@ struct EditRoutineView: View {
                                 .font(.caption)
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.white)
-
                                 .padding(6)
                                 .background {
-                                    Circle()
-                                        .fill(Color.accentColor)
+                                    Circle().fill(Color.accentColor)
                                 }
                         }
                     }
-                   
-    
-
-
                 }
                 .frame(width: 100)
             }
         }
-        .onAppear {
-//            viewModel.setContext(modelContext)
+    }
+    
+    private func deleteActivity(at offsets: IndexSet) {
+        for index in offsets {
+            let item = routine[index]
+            modelContext.delete(item)
+        }
+        routine.remove(atOffsets: offsets)
+        updateActivityIndex()
+        saveContext()
+    }
+    
+    private func moveActivity(from source: IndexSet, to destination: Int) {
+        routine.move(fromOffsets: source, toOffset: destination)
+        updateActivityIndex()
+        saveContext()
+    }
+    
+    private func updateActivityIndex() {
+        for (i, item) in routine.enumerated() {
+            item.index = i
+        }
+    }
+    
+    private func saveContext() {
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save context: \(error.localizedDescription)")
         }
     }
 }

@@ -5,7 +5,6 @@
 //  Created by Umar Abdul Azis on 05/04/25.
 //
 import SwiftData
-import Foundation
 
 @Model
 class ActivityModel {

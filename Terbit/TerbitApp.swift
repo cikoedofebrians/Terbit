@@ -6,9 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
-
-
 
 @main
 struct TerbitApp: App {
@@ -36,6 +33,6 @@ struct TerbitApp: App {
         WindowGroup {
             TerbitTabBarView()
         }
-//        .modelContainer(sharedModelContainer)
+        .modelContainer(for: [ActivityModel.self, RoutineModel.self])
     }
 }

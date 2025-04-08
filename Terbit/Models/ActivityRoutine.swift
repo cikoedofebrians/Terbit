@@ -8,6 +8,6 @@
 
 
 struct ActivityRoutine: Hashable {
-    let activity: MorningActivity
+    let activity: ActivityModel
     let index: Int
 }

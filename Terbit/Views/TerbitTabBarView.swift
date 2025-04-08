@@ -12,8 +12,6 @@ struct TerbitTabBarView: View {
     @State var historyRouter = HistoryRouter()
     @State var routineStore: RoutineStore = RoutineStore()
     
-//    @Environment(\.modelContext) private var modelContext
-    
     var body: some View {
         TabView {
             Tab("My Routine", systemImage: "sunrise.fill") {

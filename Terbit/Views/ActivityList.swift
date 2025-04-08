@@ -6,18 +6,20 @@
 //
 
 import SwiftUI
-
+import SwiftData
 
 struct ActivityList: View {
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
-   
-    @Environment(\.modelContext) private var modelContext
-    @StateObject private var viewModel = ActivityViewModel()
+    @Environment(\.modelContext) private var context
+    
+    @Query(sort: [SortDescriptor(\ActivityModel.name)]) private var activities: [ActivityModel]
+    
+    @Query(sort: [SortDescriptor(\RoutineModel.index)]) private var routine: [RoutineModel]
     
     var body: some View {
         List {
-            ForEach(constantMorningRoutine, id: \.self) { activity in
+            ForEach(activities, id: \.self) { activity in
                 Button {
                         myRoutineRouter.push(.activityDetailsView(ActivityDetailsType.add(activity)))
                 } label: {
@@ -36,19 +38,18 @@ struct ActivityList: View {
                         }
                         Spacer()
                         Button {
-                            myRoutineRouter.popUntil(.editRoutineView)
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                        routineStore.selectedActivities.append(
-                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
-                                        )
-                        
-                        
-                            }
+                            addToRoutine(activity)
+//                            myRoutineRouter.popUntil(.editRoutineView)
+//                            
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+//                                        routineStore.selectedActivities.append(
+//                                            ActivityRoutine(activity: activity, index: routineStore.selectedActivities.count)
+//                                        )
+//                            }
                         } label: {
                             Text("Add")
                         }
-                        .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id }))
+                        .disabled(routine.contains(where: { $0.activity.id == activity.id }))
                         .buttonStyle(.borderedProminent)
                         .buttonBorderShape(.capsule)
                         .tint(.accentColor)
@@ -59,15 +60,38 @@ struct ActivityList: View {
         }
         .navigationTitle("Activity List")
         .onAppear {
-            viewModel.setContext(modelContext)
+            seedActivitiesIfNeeded()
         }
     }
+    
+    private func seedActivitiesIfNeeded() {
+        guard activities.isEmpty else { return }
+        
+        for item in constantActivities {
+            let activity = ActivityModel(name: item.name, desc: item.desc, instructions: item.instructions, duration: item.duration)
+            context.insert(activity)
+            print(item.name)
+        }
+        try? context.save()
+    }
+    
+    private func addToRoutine(_ activity: ActivityModel) {
+            let newRoutine = RoutineModel(activity: activity, index: routine.count)
+            context.insert(newRoutine)
+
+            do {
+                try context.save()
+                myRoutineRouter.popUntil(.editRoutineView)
+            } catch {
+                print("Failed to save new routine: \(error)")
+            }
+        }
 }
 
-#Preview {
-    NavigationStack {
-        ActivityList()
-            .environment(MyRoutineRouter())
-            .environment(RoutineStore())
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        ActivityList()
+//            .environment(MyRoutineRouter())
+//            .environment(RoutineStore())
+//    }
+//}

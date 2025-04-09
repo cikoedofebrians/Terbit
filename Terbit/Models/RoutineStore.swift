@@ -19,6 +19,7 @@ class RoutineStore {
         self.scheduleModel = dataService.fetchScheduleModel()
         self.selectedActivities = dataService.fetchRoutineModels()
         self.userHistories = dataService.fetchHistoryModels()
+        self.onGoingActivities = dataService.getOngoingHistoryModel()
         seedActivityListIfNeeded()
     }
     
@@ -26,6 +27,7 @@ class RoutineStore {
     var scheduleModel: ScheduleModel
     var allActivities: [ActivityModel] = []
     var userHistories: [HistoryModel] = []
+    var onGoingActivities: HistoryModel?
     
     func removeActivityAt(index: Int) {
         selectedActivities.remove(at: index)
@@ -80,8 +82,25 @@ class RoutineStore {
         return selectedActivities.reduce(0) { $0 + $1.activity.duration }
     }
     
-    func addHistory(_ history: HistoryModel) {
+    func fetchHistories() {
+        userHistories = dataService.fetchHistoryModels()
+    }
+    
+    func startNewHistory(startAt: Date) {
+        onGoingActivities = dataService.startNewHistorySession()
+    }
+    
+    func appendCompletedActivity( completedActivity: CompletedActivityModel) { dataService.appendCompletedActivity(completedActivity)
+    }
+    
+    func completeOngoingActivities() {
+        dataService.completeOngoingHistorySession()
+    }
+    
+    func addDummyHistory(_ history: HistoryModel) {                //add dummy history
         dataService.addHistoryModel(history)
         userHistories = dataService.fetchHistoryModels()
     }
+    
+    
 }

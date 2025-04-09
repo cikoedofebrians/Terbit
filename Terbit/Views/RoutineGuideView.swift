@@ -4,11 +4,7 @@
 //
 //  Created by Ciko Edo Febrian on 26/03/25.
 //
-
 import SwiftUI
-
-import SwiftUI
-
 import AudioToolbox
 
 struct RoutineGuideView: View {
@@ -84,9 +80,10 @@ struct RoutineGuideView: View {
                 ActivityGuideView(currentActivityIndex: $currentActivityIndex, isGuidingActive: $isGuidingActive, nextActivityIndex: $nextActivityIndex)
             }
         }
-        .onAppear(perform: {
+        .onAppear {
             myRoutineRouter.turnOffTabBar()
-        })
+            routineStore.startNewHistory(startAt: .now)
+        }
         .navigationTitle("Routine Guide")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -131,6 +128,13 @@ struct ActivityGuideView: View {
                         invalidateTimer()
                         isComplete = true
                         AudioServicesPlaySystemSound(1025) // Completed audio effect
+                        
+                        let completedActivity = CompletedActivityModel(
+                            activity: routineStore.selectedActivities[currentActivityIndex].activity,
+                            isCompleted: true
+                        )
+                        routineStore.appendCompletedActivity(completedActivity: completedActivity)
+                        
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
                             withAnimation {
                             if (currentActivityIndex + 1 ==

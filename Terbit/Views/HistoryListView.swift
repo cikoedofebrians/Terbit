@@ -9,20 +9,20 @@ import SwiftUI
 struct HistoryListView: View {
     @Environment(HistoryRouter.self) var historyRouter
     @Environment(RoutineStore.self) var routineStore
-
-    var groupedHistories: [String: [HistoryModel]] {
-        Dictionary(grouping: routineStore.userHistories) { history in
-            let formatter = DateFormatter()
-            formatter.dateFormat = "MMMM yyyy"
-            return formatter.string(from: history.date)
-        }
-    }
+    
+    @State private var groupedHistories: [Date: [HistoryModel]] = [:]
+    
+    private let monthFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter
+    }()
 
     var body: some View {
         Form {
-            ForEach(groupedHistories.keys.sorted(by: >), id: \.self) { month in
-                Section(header: Text(month)) {
-                    ForEach(groupedHistories[month] ?? [], id: \.id) { history in
+            ForEach(groupedHistories.keys.sorted(by: >), id: \.self) { monthDate in
+                Section(header: Text(monthFormatter.string(from: monthDate))) {
+                    ForEach(groupedHistories[monthDate] ?? [], id: \.id) { history in
                         HistoryRowView(history: history)
                     }
                 }
@@ -35,6 +35,13 @@ struct HistoryListView: View {
                     addRandomHistory()
                 }
             }
+        }
+        .onAppear {
+            routineStore.fetchHistories()
+            groupedHistories = groupHistories(routineStore.userHistories)
+        }
+        .onChange(of: routineStore.userHistories) {
+            groupedHistories = groupHistories(routineStore.userHistories)
         }
     }
 
@@ -61,8 +68,17 @@ struct HistoryListView: View {
 
         print("Total allActivities: \(routineStore.allActivities.count)")
         print("Adding random history: \(newHistory)")
-        routineStore.addHistory(newHistory)
+        routineStore.addDummyHistory(newHistory)
         print(routineStore.userHistories)
+    }
+    
+    private func groupHistories(_ histories: [HistoryModel]) -> [Date: [HistoryModel]] {
+        let sortedHistories = histories.sorted { $0.date > $1.date }
+
+        let calendar = Calendar.current
+        return Dictionary(grouping: sortedHistories) { history in
+            calendar.date(from: calendar.dateComponents([.year, .month], from: history.date))!
+        }
     }
 }
 

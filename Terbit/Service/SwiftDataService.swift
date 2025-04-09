@@ -52,9 +52,6 @@ class SwiftDataService {
             if !existingTitles.contains(activity.title) {
                 modelContext.insert(activity)
             }
-//            else {
-//                print("'\(activity.title)' sudah ada, skip.")
-//            }
         }
         
         do {
@@ -66,31 +63,12 @@ class SwiftDataService {
     
     // History
     
-    func fetchHistoryModels()   -> [HistoryModel] {
+    func fetchHistoryModels() -> [HistoryModel] {
         do {
-            return try modelContext.fetch(FetchDescriptor<HistoryModel>())
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-    }
-    
-    func updateRoutineModel(_ routineModel: RoutineModel, index: Int) {
-        routineModel.index = index
-        save()
-    }
-    
-    func fetchScheduleModel()  -> ScheduleModel {
-        do {
-            let scheduleModels = try modelContext.fetch(FetchDescriptor<ScheduleModel>())
-            if scheduleModels.isEmpty {
-                let scheduleModel = ScheduleModel(
-                    hour: Date(), days: [], maxDuration: 0
-                )
-                addScheduleModel(scheduleModel)
-                return scheduleModel
-            } else {
-                return scheduleModels[0]
-            }
+            let descriptor = FetchDescriptor<HistoryModel>(
+                sortBy: [SortDescriptor(\.date, order: .reverse)]
+            )
+            return try modelContext.fetch(descriptor)
         } catch {
             fatalError(error.localizedDescription)
         }
@@ -105,8 +83,53 @@ class SwiftDataService {
         }
     }
     
-    func addScheduleModel(_ scheduleModel: ScheduleModel) {
-        modelContext.insert(scheduleModel)
+    func getOngoingHistoryModel() -> HistoryModel? {
+        do {
+            let today = Calendar.current.startOfDay(for: Date())
+            let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+
+            let descriptor = FetchDescriptor<HistoryModel>(
+                predicate: #Predicate {
+                    $0.endAt == nil &&
+                    $0.date >= today && $0.date < tomorrow
+                },
+                sortBy: [SortDescriptor(\.startAt, order: .reverse)]
+            )
+            return try modelContext.fetch(descriptor).first
+        } catch {
+            print("Failed to fetch ongoing history: \(error)")
+            return nil
+        }
+    }
+
+    func startNewHistorySession(startAt: Date = Date()) -> HistoryModel {
+        let today = Calendar.current.startOfDay(for: Date())
+        let newHistory = HistoryModel(date: today, completedActivities: [], startAt: Date(), endAt: nil)
+        modelContext.insert(newHistory)
+        save()
+        return newHistory
+    }
+
+    func appendCompletedActivity(_ completedActivity: CompletedActivityModel) {
+        if let ongoing = getOngoingHistoryModel() {
+            ongoing.completedActivities.append(completedActivity)
+            save()
+        } else {
+            print("No ongoing history found. You should start a new history session first.")
+        }
+    }
+
+    func completeOngoingHistorySession() {
+        if let ongoing = getOngoingHistoryModel() {
+            ongoing.endAt = Date()
+            save()
+        }
+    }
+    
+    // Routine
+    
+    func updateRoutineModel(_ routineModel: RoutineModel, index: Int) {
+        routineModel.index = index
         save()
     }
     
@@ -129,4 +152,29 @@ class SwiftDataService {
         modelContext.insert(routineModel)
         save()
     }
+    
+    //Schedule
+    
+    func fetchScheduleModel()  -> ScheduleModel {
+        do {
+            let scheduleModels = try modelContext.fetch(FetchDescriptor<ScheduleModel>())
+            if scheduleModels.isEmpty {
+                let scheduleModel = ScheduleModel(
+                    hour: Date(), days: [], maxDuration: 0
+                )
+                addScheduleModel(scheduleModel)
+                return scheduleModel
+            } else {
+                return scheduleModels[0]
+            }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    func addScheduleModel(_ scheduleModel: ScheduleModel) {
+        modelContext.insert(scheduleModel)
+        save()
+    }
+    
 }

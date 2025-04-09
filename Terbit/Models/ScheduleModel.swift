@@ -9,20 +9,23 @@ import Foundation
 
 @Model
 class ScheduleModel {
-    var hour: Date
-    var daysRaw: String
+    @Attribute var hour: Date
+    @Attribute var daysString: String
 
-    init(hour: Date, days: [String]) {
+    init(hour: Date, days: [Int]) {
         self.hour = hour
-        self.daysRaw = days.joined(separator: ", ")
+        self.daysString = days.map(String.init).joined(separator: ",")
     }
 
-    var days: [String] {
-        get {
-            daysRaw.components(separatedBy: ", ").filter { !$0.isEmpty }
-        }
-        set {
-            daysRaw = newValue.joined(separator: ", ")
+    var days: [Int] {
+        daysString.split(separator: ",").compactMap { Int($0.trimmingCharacters(in: .whitespaces)) }
+    }
+    
+    func toggleDay(_ day: Int) {
+        if days.contains(day) {
+            daysString = days.filter { $0 != day }.map(String.init).joined(separator: ",")
+        } else {
+            daysString += ",\(day)"
         }
     }
 }

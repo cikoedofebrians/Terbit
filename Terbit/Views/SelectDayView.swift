@@ -15,36 +15,53 @@ struct SelectDayView: View {
     @Query private var ScheduleModel: [ScheduleModel]
     
     @State private var selectedDays: [String] = []
-   
+    
     var body: some View {
-
-            List {
-                ForEach(constantDays, id: \.self) { day in
-                    Button {
-                        //
-                    } label: {
-                        HStack {
-                            Text(day)
-                            if selectedDays.contains(day) {
-                                Spacer()
-                                Image(systemName: "checkmark")
-                                    .foregroundStyle(.green)
-                            }
+        List {
+            ForEach(constantDaysInt.indices, id: \.self) { dayIndex in
+                Button {
+                    routineStore.toggleDay(constantDaysInt[dayIndex])
+                } label: {
+                    HStack {
+                        Text(constantDays[dayIndex])
+                        if routineStore.scheduleModel.days.contains(constantDaysInt[dayIndex]) {
+                            Spacer()
+                            Image(systemName: "checkmark")
+                                .foregroundStyle(.green)
+                            
                         }
                     }
                     .tint(.primary)
+                }
+                .tint(.primary)
+                
+                
+            }
+            Button {
+                routineStore.toggleEveryDay()
+            } label: {
+                HStack {
+                    Text("Every day")
+                        .tint(.primary)
+                    if routineStore.scheduleModel.days.count == constantDaysInt.count {
+                        Spacer()
+                        Image(systemName: "checkmark")
+                            .foregroundStyle(.green)
+                        
+                    }
                 }
             }
             .navigationTitle("Day")
             .navigationBarTitleDisplayMode(.inline)
         }
-}
-
-#Preview {
-    NavigationStack {
-        SelectDayView()
-        
     }
-    .environment(RoutineStore(dataService: .shared))
-
 }
+
+//#Preview {
+//    NavigationStack {
+//        SelectDayView()
+//        
+//    }
+//    .environment(RoutineStore(dataService: .shared))
+//
+//}

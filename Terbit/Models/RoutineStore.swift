@@ -16,53 +16,55 @@ class RoutineStore {
     
     init(dataService: SwiftDataService) {
         self.dataService = dataService
+        self.scheduleModel = dataService.fetchScheduleModel()
+        self.selectedActivities = dataService.fetchRoutineModels()
+        self.userHistories = dataService.fetchHistoryModels()
         seedActivityListIfNeeded()
-        fetchEverything()
     }
     
-    var selectedActivities: [RoutineModel] = [
-//        RoutineModel(activity: constantMorningRoutine[0], index: 0),
-//        RoutineModel(activity: constantMorningRoutine[2], index: 1),
-    ]
-    
+    var selectedActivities: [RoutineModel] = []
+    var scheduleModel: ScheduleModel
     var allActivities: [ActivityModel] = []
-    
     var userHistories: [HistoryModel] = []
-    
-    func fetchEverything()  {
-        fetchActivities()
-        fetchHistories()
-    }
     
     func removeActivityAt(index: Int) {
         selectedActivities.remove(at: index)
     }
     
-    var selectedDays: [String] = []
+    func toggleDay(_ dayIndex: Int) {
+        scheduleModel.toggleDay(dayIndex)
+        dataService.save()
+    }
     
-    var selectedTime: Date = Date()
+    func toggleEveryDay() {
+        if  scheduleModel.days.count == constantDaysInt.count {
+            scheduleModel.daysString = ""
+        } else {
+            scheduleModel.daysString = "1,2,3,4,5,6,7"
+        }
+        dataService.save()
+    }
+        
     
-    func fetchActivities()  {
+    func addActivity(_ activity: ActivityModel) {
+        let routineModel = RoutineModel(activity: activity, index: selectedActivities.count)
+        dataService.addRoutineModel(routineModel)
         selectedActivities = dataService.fetchRoutineModels()
     }
     
-    func fetchHistories()  {
-        userHistories = dataService.fetchHistoryModels()
+    func deleteRoutineModel(routineModel: RoutineModel) {
+        dataService.deleteRoutineModel(routineModel)
+        selectedActivities = dataService.fetchRoutineModels()
     }
     
-    func addActivity(_ activity: ActivityModel) {
-//        print("TEST")
-        let routineModel = RoutineModel(activity: activity, index: selectedActivities.count)
-        dataService.addRoutineModel(routineModel)
-        fetchActivities()
-    }
-    
-    func removeActivity(at index: Int) {
-        selectedActivities.remove(at: index)
-    }
-    
-    func replaceActivity(at index: Int, with activity: RoutineModel) {
-        selectedActivities[index] = activity
+    func reorderRoutineModel(from sourceIndex: IndexSet, to destinationIndex: Int) {
+        selectedActivities.move(fromOffsets: sourceIndex, toOffset: destinationIndex)
+        for (i, routineModel) in selectedActivities.enumerated() {
+            routineModel.index = i
+            dataService.updateRoutineModel(routineModel, index: i)
+        }
+        dataService.save()
+        selectedActivities = dataService.fetchRoutineModels()
     }
     
     func addAllActivities() {
@@ -80,6 +82,6 @@ class RoutineStore {
     
     func addHistory(_ history: HistoryModel) {
         dataService.addHistoryModel(history)
-        fetchHistories()
+        userHistories = dataService.fetchHistoryModels()
     }
 }

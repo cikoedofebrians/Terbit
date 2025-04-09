@@ -14,11 +14,14 @@ public struct ScheduleCompView: View {
     
     public var body: some View {
         @Bindable var routineStore = routineStore
-        
         Section("Schedule") {
             HStack {
-                DatePicker("Hour", selection: $routineStore.selectedTime, displayedComponents: .hourAndMinute)
+                DatePicker("Hour", selection: $routineStore.scheduleModel.hour, displayedComponents: .hourAndMinute)
+                    .onChange(of: routineStore.scheduleModel.hour) { oldValue, newValue in
+                        routineStore.dataService.save()
+                    }
             }
+            
             Button {
                 myRoutineRouter.push(.selectDayView)
             } label: {
@@ -26,11 +29,11 @@ public struct ScheduleCompView: View {
                     Text("Repeat")
                     Spacer()
                     Group {
-                        Text(routineStore.selectedDays.count == 0 ?
+                        Text(routineStore.scheduleModel.days.count == 0 ?
                              "Never" :
-                                routineStore.selectedDays.count == constantDays.count ?
+                                routineStore.scheduleModel.days.count == constantDaysInt.count  ?
                              "Every day" :
-                                routineStore.selectedDays.map({ String($0.prefix(3)) }).joined(separator: ", "))
+                                routineStore.scheduleModel.days.indices.map { constantDays[$0].prefix(3) }.joined(separator: ", "))
                         Image(systemName: "chevron.right")
                     }                    .foregroundStyle(.secondary)
                 }

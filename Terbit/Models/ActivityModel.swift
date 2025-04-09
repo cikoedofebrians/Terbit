@@ -7,6 +7,15 @@
 import Foundation
 import SwiftData
 
+//
+//struct ActivityModel: Identifiable, Hashable {
+//    let id = UUID()
+//    let title: String
+//    let description: String
+//    let instructions: [String]
+//    let duration: Int
+//}
+
 @Model
 class ActivityModel {
     var title: String

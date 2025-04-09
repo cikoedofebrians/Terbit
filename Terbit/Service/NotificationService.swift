@@ -25,17 +25,17 @@ class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
         }
     }
     
-    func scheduleNotification(hour: Int, minute: Int, weekdays: [Int]) {
+    func scheduleNotification(hour: Int, minutes: Int, weekdays: [Int]) {
         
         let content = UNMutableNotificationContent()
-        content.title = "Habis gelap terbitlah terang"
-        content.body = "Cerahkan harimu dengan aktivitas yang sudah kamu buat!!"
+        content.title = "siap untuk Terbitkan harimu?"
+        content.body = "Yuk kerjakan dulu rutinitas terbitmu sebelum mulai bekerja !!"
         
         for weekday in weekdays {
             var dateComponents = DateComponents()
             dateComponents.weekday = weekday
             dateComponents.hour = hour
-            dateComponents.minute = minute
+            dateComponents.minute = minutes
             
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
             

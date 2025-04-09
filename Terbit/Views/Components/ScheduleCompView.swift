@@ -52,7 +52,7 @@ public struct ScheduleCompView: View {
                              "Never" :
                                 routineStore.scheduleModel.days.count == constantDaysInt.count  ?
                              "Every day" :
-                                routineStore.scheduleModel.days.indices.map { constantDays[$0].prefix(3) }.joined(separator: ", "))
+                                routineStore.scheduleModel.days.sorted().map { constantDays[$0 - 1].prefix(3) }.joined(separator: ", "))
                         Image(systemName: "chevron.right")
                     }                    .foregroundStyle(.secondary)
                 }

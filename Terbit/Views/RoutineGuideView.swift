@@ -22,9 +22,9 @@ struct RoutineGuideView: View {
     }
     
     func startTimer() {
-        currentActivityIndex = nextActivityIndex
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             if (timeRemaining == 0) {
+                currentActivityIndex = nextActivityIndex
                 withAnimation {
                     isGuidingActive.toggle()
                     nextActivityIndex += 1
@@ -37,7 +37,9 @@ struct RoutineGuideView: View {
                     timeRemaining -= 1
                 }
             }
+            
         }
+        
     }
     
     
@@ -69,8 +71,6 @@ struct RoutineGuideView: View {
                     .foregroundStyle(.secondary)
                 }
                 .onAppear {
-                    print(selectedActivities.count, nextActivityIndex)
-                    startTimer()
                     AudioServicesPlaySystemSound(1113) // audio effect
                 }
                 .onDisappear {
@@ -129,12 +129,14 @@ struct ActivityGuideView: View {
                         
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6, execute: {
                             withAnimation {
-                            if (currentActivityIndex + 1 ==
-                                routineStore.selectedActivities.count) {
-                                myRoutineRouter.push(.routineGuideCompleteView)
-                            } else {
+                                if (currentActivityIndex + 1 ==
+                                    routineStore.selectedActivities.count) {
+                                    routineStore.completeOngoingActivities()
+                                    myRoutineRouter.push(.routineGuideCompleteView)
+                                } else {
                                     isGuidingActive = false
-                                    nextActivityIndex += 1
+                                    //                                print(nextActivityIndex)
+                                    //                                    nextActivityIndex += 1
                                 }
                             }
                         })
@@ -164,7 +166,7 @@ struct ActivityGuideView: View {
                 BreathingGuideCompView(
                     breathingStepIndex: $currentStepIndex
                 )
-                    .padding(.vertical, 48)
+                .padding(.vertical, 48)
             } else {
                 Image(routineStore.selectedActivities[currentActivityIndex].activity.imagesWithRepeatCount[currentStepIndex])
                     .resizable()

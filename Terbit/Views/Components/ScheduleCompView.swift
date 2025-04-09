@@ -90,7 +90,7 @@ public struct ScheduleCompView: View {
                 notify.removeAllNotifications()
                 notify.scheduleNotification(hour: hour, minutes: minutes, weekdays: routineStore.scheduleModel.days)
                 
-                print("\(hour):\(minutes)")
+//                print("\(hour):\(minutes)")
                 
                 // Initialize timeStart based on the model value
                 let start = calendar.startOfDay(for: Date())

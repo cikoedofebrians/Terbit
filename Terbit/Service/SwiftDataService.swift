@@ -90,7 +90,6 @@ class SwiftDataService {
 
             let descriptor = FetchDescriptor<HistoryModel>(
                 predicate: #Predicate {
-                    $0.endAt == nil &&
                     $0.date >= today && $0.date < tomorrow
                 },
                 sortBy: [SortDescriptor(\.startAt, order: .reverse)]
@@ -104,7 +103,7 @@ class SwiftDataService {
 
     func startNewHistorySession(startAt: Date = Date()) -> HistoryModel {
         let today = Calendar.current.startOfDay(for: Date())
-        let newHistory = HistoryModel(date: today, completedActivities: [], startAt: Date(), endAt: nil)
+        let newHistory = HistoryModel(date: today, completedActivities: [], startAt: Date(), endAt: Date())
         modelContext.insert(newHistory)
         save()
         return newHistory
@@ -113,6 +112,9 @@ class SwiftDataService {
     func appendCompletedActivity(_ completedActivity: CompletedActivityModel) {
         if let ongoing = getOngoingHistoryModel() {
             ongoing.completedActivities.append(completedActivity)
+            if completedActivity.isCompleted {
+                ongoing.endAt = Date()
+            }
             save()
         } else {
             print("No ongoing history found. You should start a new history session first.")

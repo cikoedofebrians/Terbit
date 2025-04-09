@@ -34,9 +34,6 @@ struct TerbitTabBarView: View {
                             }
                         }
                 }
-                .onAppear {
-                    routineStore.fetchEverything()
-                }
                 .toolbar(myRoutineRouter.tabBarVisibility, for: .tabBar)
                 .environment(routineStore)
                 .environment(myRoutineRouter)
@@ -48,8 +45,8 @@ struct TerbitTabBarView: View {
 
                         .navigationDestination(for: HistoryViewEnum.self) { screen in
                             switch screen {
-                            case .historyDetailsView:
-                                HistoryDetailsView()
+                            case .historyDetailsView(let history):
+                                HistoryDetailsView(history: history)
                             }
                         }
                     

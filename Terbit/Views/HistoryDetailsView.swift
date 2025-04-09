@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct HistoryDetailsView: View {
+    @Environment(HistoryRouter.self) var historyRouter
+    @Environment(RoutineStore.self) var routineStore
+    
+    var history: HistoryModel
+    
     @State var durationPerActivity: Int = 3
     @State var numberOfActivity: Int = 4
 
@@ -16,28 +21,37 @@ struct HistoryDetailsView: View {
         List {
             // Section for activities
             Section(header :
-                Text("mon, 26/3/2025")
+                Text(history.date.formatted(.dateTime.weekday(.abbreviated).day().month(.wide).year()))
                 .font(.subheadline)
             ) {
-                ForEach(Array(0..<numberOfActivity), id: \.self) { _ in
+                ForEach(history.completedActivities.indices, id: \.self) { index in
+                    let completed = history.completedActivities[index]
                     HStack {
-                        
                         // Icon
-                        Rectangle().frame(width: 44, height: 44).foregroundColor(.gray)
-                        
+                        Image(systemName: completed.activity.logoImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 44, height: 44)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .foregroundStyle(
+                                LinearGradient(colors: [Color.red, Color.blue], startPoint: .leading, endPoint: .trailing)
+                            )
+
                         // Name and Duration
-                        VStack (alignment: .leading){
-                            Text("Activity Name")
-                            Text("\(durationPerActivity) mins")
+                        VStack(alignment: .leading) {
+                            Text(completed.activity.title)
+                            Text("\(completed.activity.duration) mins")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                         .padding(.leading)
-                        
+
                         Spacer()
-                        
+
                         // Status Checkmark
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.largeTitle)
-                            .foregroundStyle(.green)
+                        Image(systemName: completed.isCompleted ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(completed.isCompleted ? .green : .red)
                     }
                 }
             }
@@ -52,15 +66,15 @@ struct HistoryDetailsView: View {
                 
                 // Status
                 HStack {
-                    Image(systemName: "checkmark.circle.fill")
+                    Image(systemName: history.isComplete ? "checkmark.circle.fill" : "xmark.circle.fill")
                         .font(.title2)
                         .foregroundStyle(.secondary)
-                    
+
                     Text("Status")
-                    .padding(.leading)
-                    
+                        .padding(.leading)
+
                     Spacer()
-                    Text("Completed")
+                    Text(history.isComplete ? "Completed" : "Incomplete")
                 }
                 
                     
@@ -69,12 +83,12 @@ struct HistoryDetailsView: View {
                     Image(systemName: "alarm")
                         .font(.title2)
                         .foregroundStyle(.secondary)
-                    
+
                     Text("Time")
-                    .padding(.leading)
-                    
+                        .padding(.leading)
+
                     Spacer()
-                    Text("10:00 - 10:10")
+                    Text("\(formattedTime(history.startAt)) - \(formattedTime(history.endAt))")
                 }
                 
                 // Duration
@@ -82,13 +96,12 @@ struct HistoryDetailsView: View {
                     Image(systemName: "timer")
                         .font(.title2)
                         .foregroundStyle(.secondary)
-                    
+
                     Text("Duration")
-                    .padding(.leading)
-                    
+                        .padding(.leading)
+
                     Spacer()
-                    Text("\(durationPerActivity * numberOfActivity) mins")
-                    
+                    Text("\(history.totalActualDuration) mins")
                 }
             }
             .listRowBackground(Color.clear)
@@ -98,12 +111,19 @@ struct HistoryDetailsView: View {
         .navigationTitle("Activities")
         
     }
-}
-
-#Preview {
-    NavigationStack {
-        HistoryDetailsView()
-            .environment(RoutineStore(dataService: .shared))
-            .environment(MyRoutineRouter())
+    
+    private func formattedTime(_ date: Date?) -> String {
+        guard let date = date else { return "-" }
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 }
+
+//#Preview {
+//    NavigationStack {
+//        HistoryDetailsView()
+//            .environment(RoutineStore(dataService: .shared))
+//            .environment(MyRoutineRouter())
+//    }
+//}

@@ -7,6 +7,6 @@
 
 
 enum HistoryViewEnum: Hashable, Equatable {
-    case historyDetailsView
+    case historyDetailsView(HistoryModel)
 }
     

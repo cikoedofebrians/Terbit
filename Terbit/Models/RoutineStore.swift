@@ -16,6 +16,8 @@ class RoutineStore {
     
     init(dataService: SwiftDataService) {
         self.dataService = dataService
+        seedActivityListIfNeeded()
+        fetchEverything()
     }
     
     var selectedActivities: [RoutineModel] = [
@@ -23,10 +25,15 @@ class RoutineStore {
 //        RoutineModel(activity: constantMorningRoutine[2], index: 1),
     ]
     
+    var allActivities: [ActivityModel] = []
+    
+    var userHistories: [HistoryModel] = []
     
     func fetchEverything()  {
         fetchActivities()
+        fetchHistories()
     }
+    
     func removeActivityAt(index: Int) {
         selectedActivities.remove(at: index)
     }
@@ -37,11 +44,14 @@ class RoutineStore {
     
     func fetchActivities()  {
         selectedActivities = dataService.fetchRoutineModels()
-        print(selectedActivities)
+    }
+    
+    func fetchHistories()  {
+        userHistories = dataService.fetchHistoryModels()
     }
     
     func addActivity(_ activity: ActivityModel) {
-        print("TEST")
+//        print("TEST")
         let routineModel = RoutineModel(activity: activity, index: selectedActivities.count)
         dataService.addRoutineModel(routineModel)
         fetchActivities()
@@ -55,7 +65,21 @@ class RoutineStore {
         selectedActivities[index] = activity
     }
     
+    func addAllActivities() {
+        allActivities = dataService.fetchActivityModels()
+    }
+    
+    func seedActivityListIfNeeded() {
+        dataService.seedConstantActivities(constantMorningRoutine)
+        addAllActivities()
+    }
+    
     func getTotalDuration() -> Int {
         return selectedActivities.reduce(0) { $0 + $1.activity.duration }
+    }
+    
+    func addHistory(_ history: HistoryModel) {
+        dataService.addHistoryModel(history)
+        fetchHistories()
     }
 }

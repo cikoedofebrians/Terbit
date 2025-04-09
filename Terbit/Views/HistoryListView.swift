@@ -7,65 +7,93 @@
 import SwiftUI
 
 struct HistoryListView: View {
-    
-    var body: some View {
-        Form{
-            HistoryListSection(title: "MARCH 2025", historyList: [
-                HistoryItemModel(completed: true, progress: "6/6", time: "10 min", date: "05/3/2025"),
-                HistoryItemModel(completed: false, progress: "1/2", time: "2 min", date: "04/3/2025"),
-                HistoryItemModel(completed: false, progress: "0/2", time: "0 min", date: "03/3/2025"),
-                HistoryItemModel(completed: false, progress: "0/2", time: "0 min", date: "02/3/2025"),
-                HistoryItemModel(completed: false, progress: "0/2", time: "0 min", date: "01/3/2025"),
-                ])
+    @Environment(HistoryRouter.self) var historyRouter
+    @Environment(RoutineStore.self) var routineStore
 
-            HistoryListSection(title: "February 2025", historyList: [
-                HistoryItemModel(completed: false, progress: "3/6", time: "5 min", date: "28/3/2025"),
-                HistoryItemModel(completed: false, progress: "0/2", time: "0 min", date: "27/2/2025")
-                ])
+    var groupedHistories: [String: [HistoryModel]] {
+        Dictionary(grouping: routineStore.userHistories) { history in
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MMMM yyyy"
+            return formatter.string(from: history.date)
+        }
+    }
+
+    var body: some View {
+        Form {
+            ForEach(groupedHistories.keys.sorted(by: >), id: \.self) { month in
+                Section(header: Text(month)) {
+                    ForEach(groupedHistories[month] ?? [], id: \.id) { history in
+                        HistoryRowView(history: history)
+                    }
+                }
+            }
         }
         .navigationTitle("History")
-    }
-}
-
-struct HistoryListSection: View {
-    let title: String
-    let historyList: [HistoryItemModel]
-    
-    var body: some View {
-        Section (title) {
-            List(historyList, id: \.id) { activity in HistoryListCard(routineHistory: activity)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Add") {
+                    addRandomHistory()
+                }
             }
         }
     }
+
+    private func addRandomHistory() {
+        let randomActivities = routineStore.allActivities.shuffled().prefix(Int.random(in: 1...3))
+
+        let completedActivities = randomActivities.map { activity in
+            CompletedActivityModel(activity: activity, isCompleted: Bool.random())
+        }
+
+        let randomDaysOffset = Int.random(in: -90...90)
+        let randomDate = Calendar.current.date(byAdding: .day, value: randomDaysOffset, to: .now)!
+
+        let now = randomDate
+        let totalDuration = completedActivities.reduce(0) { $0 + $1.activity.duration }
+        let endAt = now.addingTimeInterval(TimeInterval(totalDuration * 60))
+
+        let newHistory = HistoryModel(
+            date: now,
+            completedActivities: completedActivities,
+            startAt: now,
+            endAt: endAt
+        )
+
+        print("Total allActivities: \(routineStore.allActivities.count)")
+        print("Adding random history: \(newHistory)")
+        routineStore.addHistory(newHistory)
+        print(routineStore.userHistories)
+    }
 }
 
-struct HistoryListCard: View {
-    let routineHistory: HistoryItemModel
+struct HistoryRowView: View {
+    var history: HistoryModel
     @Environment(HistoryRouter.self) var historyRouter
-    
+
     var body: some View {
-        Button(action: {
-            historyRouter.push(.historyDetailsView)
-            }) {
+        Button {
+            historyRouter.push(.historyDetailsView(history))
+        } label: {
             HStack {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("\(routineHistory.progress) Activities")
+                    Text("\(history.completedCount)/\(history.totalActivities) Activities")
                         .font(.headline)
+
                     HStack {
                         Image(systemName: "timer")
-                        Text(routineHistory.time)
+                        Text("\(history.totalActualDuration) min")
                             .font(.subheadline)
-                    
                     }
                     .foregroundStyle(.secondary)
                 }
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .trailing, spacing: 6) {
-                    Text(routineHistory.completed ? "Completed" : "Incomplete")
-                        .foregroundColor(routineHistory.completed ? .green : .red)
-                    Text(routineHistory.date)
+                    Text(history.isComplete ? "Completed" : "Incomplete")
+                        .foregroundColor(history.isComplete ? .green : .red)
+
+                    Text(history.date.formatted(.dateTime.day().month().year()))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -76,18 +104,11 @@ struct HistoryListCard: View {
     }
 }
 
-struct HistoryItemModel: (Identifiable) {
-    let id: UUID = UUID()
-    let completed: Bool
-    let progress: String
-    let time: String
-    let date: String
-}
-
-#Preview {
-    NavigationStack {
-        HistoryListView()
-            .environment(RoutineStore(dataService: .shared))
-            .environment(MyRoutineRouter())
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        HistoryListView()
+//            .environment(RoutineStore(dataService: .shared))
+//            .environment(HistoryRouter())
+//        
+//    }
+//}

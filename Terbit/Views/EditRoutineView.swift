@@ -6,25 +6,21 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct EditRoutineView: View {
+    
     @State var editMode: EditMode = .inactive
-    
     @Environment(MyRoutineRouter.self) var myRoutineRouter
-    @Environment(\.modelContext) private var modelContext
-    
-    @Query(sort: [SortDescriptor(\RoutineModel.index)]) private var fetchedRoutine: [RoutineModel]
-    @State private var routine: [RoutineModel] = []
+    @Environment(RoutineStore.self) var routineStore
     
     var body: some View {
         List {
-            ForEach(Array(routine.enumerated()), id: \.1) { idx, routineActivity in
+            ForEach(Array(routineStore.selectedActivities.enumerated()), id: \.1) { idx, routineActivity in
                 Button {
                     if editMode == .inactive {
                         myRoutineRouter.push(.activityDetailsView(.viewOnly(routineActivity.activity)))
                     }
-
+                    
                 } label: {
                     HStack (spacing: 16){
                         Image(systemName: routineActivity.activity.logoImage)
@@ -52,9 +48,9 @@ struct EditRoutineView: View {
                     .tint(.primary)
                 }
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    Button(role: .destructive) {
+                    Button  (role: .destructive){
                         withAnimation {
-                            deleteActivity(at: IndexSet(integer: idx))
+                            routineStore.removeActivity(at: idx)
                         }
                         
                     } label: {
@@ -64,18 +60,25 @@ struct EditRoutineView: View {
                     .tint(.red)
                 }
                 .moveDisabled(!editMode.isEditing)
+                
             }
-            .onMove(perform: moveActivity)
-            .onDelete(perform: deleteActivity)
+            
+            .onDelete { offsets in
+                print(offsets)
+            }
+            .onMove { from, to in
+                print(from)
+                print(to)
+            }
+            
         }
-        .onAppear {
-            routine = fetchedRoutine
-        }
+        
         .environment(\.editMode, $editMode)
         .navigationTitle("Manage Routine")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 HStack(spacing: 0) {
+                    
                     Button {
                         withAnimation {
                             if editMode.isEditing {
@@ -90,6 +93,7 @@ struct EditRoutineView: View {
                     }
                     .padding(.trailing, 8)
                     
+                    
                     if !editMode.isEditing {
                         Button {
                             myRoutineRouter.push(.activityListView)
@@ -100,7 +104,8 @@ struct EditRoutineView: View {
                                 .foregroundStyle(.white)
                                 .padding(8)
                                 .background {
-                                    Circle().fill(Color.accentColor)
+                                    Circle()
+                                        .fill(Color.accentColor)
                                 }
                         }
                     }
@@ -111,35 +116,6 @@ struct EditRoutineView: View {
                 }
             }
         }
-    }
-    
-    private func deleteActivity(at offsets: IndexSet) {
-        for index in offsets {
-            let item = routine[index]
-            modelContext.delete(item)
-        }
-        routine.remove(atOffsets: offsets)
-        updateActivityIndex()
-        saveContext()
-    }
-    
-    private func moveActivity(from source: IndexSet, to destination: Int) {
-        routine.move(fromOffsets: source, toOffset: destination)
-        updateActivityIndex()
-        saveContext()
-    }
-    
-    private func updateActivityIndex() {
-        for (i, item) in routine.enumerated() {
-            item.index = i
-        }
-    }
-    
-    private func saveContext() {
-        do {
-            try modelContext.save()
-        } catch {
-            print("Failed to save context: \(error.localizedDescription)")
     }
 }
 

@@ -33,6 +33,6 @@ struct TerbitApp: App {
         WindowGroup {
             TerbitTabBarView()
         }
-        .modelContainer(for: [ActivityModel.self, RoutineModel.self])
+//        .modelContainer(for: [ActivityModel.self, RoutineModel.self])
     }
 }

@@ -18,7 +18,8 @@ let constantMorningRoutine: [ActivityModel] = [
           duration: 2,
           logoImage: "applepencil.and.scribble",
           images: ["SetFocus"],
-          instructionDurations: [3]
+          instructionDurations: [120],
+          detailsImage: "DetailsSetFocus"
       ),
       ActivityModel(
           title: "Hydrate Gently",
@@ -29,7 +30,8 @@ let constantMorningRoutine: [ActivityModel] = [
           duration: 1,
           logoImage: "cup.and.saucer",
           images: ["Hydrate"],
-          instructionDurations: [60]
+          instructionDurations: [60],
+          detailsImage: "DetailsHydrate"
       ),
       ActivityModel(
           title: "Stretch Your Body",
@@ -47,8 +49,9 @@ let constantMorningRoutine: [ActivityModel] = [
           duration: 2,
           logoImage: "figure.strengthtraining.functional",
           images: ["StretchBack", "StretchBackAndLateral", "StretchGlutesAndAbductors", "StretchGlutesAndAbductors", "StretchNeck", "StretchNeck", "StretchOblique", "StretchOblique"],
-//          instructionDurations: [20, 30, 30, 20, 20, 20, 20, 20]
-          instructionDurations: [3, 3, 3, 3, 3, 3, 3, 3]
+          instructionDurations: [20, 30, 30, 20, 20, 20, 20, 20],
+          detailsImage: "DetailsStretch"
+//          instructionDurations: [3, 3, 3, 3, 3, 3, 3, 3]
       ),
     ActivityModel(
           title: "Mindful Breathing",
@@ -57,32 +60,13 @@ let constantMorningRoutine: [ActivityModel] = [
               "Inhale for 4 seconds.",
               "Hold your breath for 4 seconds.",
               "Exhale for 8 seconds.",
-              "Hold again for 4 seconds.",
-              "Inhale for 4 seconds.",
-              "Hold your breath for 4 seconds.",
-              "Exhale for 4 seconds.",
-              "Hold again for 4 seconds.",
-              "Inhale for 4 seconds.",
-              "Hold your breath for 4 seconds.",
-              "Exhale for 4 seconds.",
-              "Hold again for 4 seconds.",
-              "Inhale for 4 seconds.",
-              "Hold your breath for 4 seconds.",
-              "Exhale for 4 seconds.",
-              "Hold again for 4 seconds.",
-              "Inhale for 4 seconds.",
-              "Hold your breath for 4 seconds.",
-              "Exhale for 4 seconds.",
-              "Hold again for 4 seconds.",
-              "Inhale for 4 seconds.",
-              "Hold your breath for 4 seconds.",
-              "Exhale for 4 seconds.",
-              "Hold again for 4 seconds.",
           ],
           duration: 2,
           logoImage: "wind",
           images: [],
-          instructionDurations: [4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4, 4, 4, 8, 4]
+          instructionDurations: [4, 4, 8],
+          repeatCount: 5,
+          detailsImage: "DetailsBreathing"
           
       ),
       ActivityModel(
@@ -94,6 +78,7 @@ let constantMorningRoutine: [ActivityModel] = [
           duration: 3,
           logoImage: "figure.walk",
           images: ["Walk"],
-          instructionDurations: [180]
+          instructionDurations: [180],
+          detailsImage: "DetailsWalk"
       )
 ]

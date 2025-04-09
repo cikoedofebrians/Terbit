@@ -28,8 +28,8 @@ class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
     func scheduleNotification(hour: Int, minutes: Int, weekdays: [Int]) {
         
         let content = UNMutableNotificationContent()
-        content.title = "siap untuk Terbitkan harimu?"
-        content.body = "Yuk kerjakan dulu rutinitas terbitmu sebelum mulai bekerja !!"
+        content.title = "Time for Your Routine!"
+        content.body = "Don't forget about your scheduled routine today. Open now to stay consistent."
         
         for weekday in weekdays {
             var dateComponents = DateComponents()

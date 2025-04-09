@@ -18,7 +18,9 @@ public struct TodayCompView: View {
         Section ("Today Activities"){
             if routineStore.selectedActivities.isEmpty {
                     Text("You haven't set any activity yet.\nGo to 'Manage' to set your activity")
-                        .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical, 12)
             } else {
                 HStack {
                     Text("Total Duration")
@@ -56,9 +58,7 @@ public struct TodayCompView: View {
                     .tint(.primary)
                 }
             }
-            
         }
-        
     }
 }
 

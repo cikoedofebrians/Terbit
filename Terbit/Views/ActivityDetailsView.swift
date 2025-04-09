@@ -34,9 +34,11 @@ struct ActivityDetailsView: View {
         ScrollView {
             VStack (alignment: .leading, spacing: 0){
                 
-                Rectangle()
+                Image(activity.detailsImage)
+                    .resizable()
+                    .scaledToFill()
                     .frame(height: 240)
-                    .foregroundStyle(.gray)
+                    .clipped()
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
                         Image(systemName: "timer")
@@ -44,6 +46,7 @@ struct ActivityDetailsView: View {
                     }
                     .font(.headline)
                     .foregroundStyle(.secondary)
+                    .padding(.bottom, 4)
                     HStack {
                         Text(activity.title)
                             .font(.title)
@@ -56,9 +59,7 @@ struct ActivityDetailsView: View {
                                 myRoutineRouter.popUntil(.editRoutineView)
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                                     withAnimation {
-                                        routineStore.selectedActivities.append(
-                                            RoutineModel(activity: activity, index: routineStore.selectedActivities.count)
-                                        )
+                                        routineStore.addActivity(activity)
                                     }
                                 }
                             } label: {
@@ -74,6 +75,7 @@ struct ActivityDetailsView: View {
                             EmptyView()
                         }
                     }
+                    .padding(.bottom, 4)
                     
                     Text(activity.desc)
                         .font(.body)

@@ -25,6 +25,7 @@ struct ActivityDetailsView: View {
     let activityDetailsType: ActivityDetailsType
     @Environment(RoutineStore.self) var routineStore
     @Environment(MyRoutineRouter.self) var myRoutineRouter
+    @State var showLimitAlert: Bool = false
     
     var activity: ActivityModel {
         activityDetailsType.activity
@@ -56,6 +57,10 @@ struct ActivityDetailsView: View {
                         switch activityDetailsType {
                         case .add:
                             Button {
+                                if routineStore.getTotalDuration() + activity.duration > routineStore.scheduleModel.maxDuration {
+                                    showLimitAlert = true
+                                    return
+                                }
                                 myRoutineRouter.popUntil(.editRoutineView)
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                                     withAnimation {
@@ -70,7 +75,10 @@ struct ActivityDetailsView: View {
                             .buttonBorderShape(.capsule)
                             .buttonStyle(.borderedProminent)
                             .disabled(routineStore.selectedActivities.contains(where: { $0.activity.id == activity.id}))
-                            
+                            .alert(isPresented: $showLimitAlert) {
+                                
+                                Alert(title: Text("Limit Exceeded"), message: Text("Cannot add this activity. Max routine time reached."), dismissButton: .default(Text("Got it!")))
+                            }
                         case .viewOnly(_):
                             EmptyView()
                         }

@@ -11,6 +11,8 @@ struct ActivityList: View {
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
+    @State var showLimitAlert: Bool = false
+    
     var body: some View {
         List {
             ForEach(routineStore.allActivities, id: \.self) { activity in
@@ -25,6 +27,9 @@ struct ActivityList: View {
                             .foregroundStyle(
                                 LinearGradient(colors: [Color.red, Color.blue], startPoint: .leading, endPoint: .trailing)
                             )
+                            .alert(isPresented: $showLimitAlert) {
+                                Alert(title: Text("Limit Exceeded"), message: Text("Cannot add this activity. Max routine time reached."), dismissButton: .default(Text("Got it!")))
+                            }
                         VStack(alignment: .leading, spacing: 4) {
                             Text(activity.title)
                             HStack {
@@ -35,11 +40,15 @@ struct ActivityList: View {
                         }
                         Spacer()
                         Button {
-
+                            if routineStore.getTotalDuration() + activity.duration > routineStore.scheduleModel.maxDuration {
+                                showLimitAlert = true
+                                return
+                            }
                             myRoutineRouter.popUntil(.editRoutineView)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                routineStore.addActivity(activity)
-                        
+                                withAnimation {
+                                    routineStore.addActivity(activity)
+                                }
                             }
                         } label: {
                             Text("Add")
@@ -54,15 +63,8 @@ struct ActivityList: View {
                 }
                 .tint(.primary)
             }
+        
         }
         .navigationTitle("Activity List")
-    }
-}
-
-#Preview {
-    NavigationStack {
-        ActivityList()
-            .environment(MyRoutineRouter())
-            .environment(RoutineStore(dataService: .shared))
     }
 }

@@ -13,7 +13,6 @@ public struct ScheduleCompView: View {
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     
     let notify = NotificationHandler()
-
     // Create allowed max duration only between 00:00 and 00:30
     var allowedRange: ClosedRange<Date> {
         let calendar = Calendar.current
@@ -24,6 +23,7 @@ public struct ScheduleCompView: View {
     
     // For date picker in Maximum Duration
     @State private var timeStart = Date()
+    
     
     
     public var body: some View {
@@ -64,13 +64,17 @@ public struct ScheduleCompView: View {
                            selection:$timeStart,
                            in: allowedRange,
                            displayedComponents: [.hourAndMinute])
-                    .onChange(of: timeStart) { _, newValue in
+                    .onChange(of: timeStart) { oldValue, newValue in
                         let calendar = Calendar.current
                         let startOfDay = calendar.startOfDay(for: newValue)
                         let components = calendar.dateComponents([.minute], from: calendar.startOfDay(for: startOfDay), to: newValue)
+                        
+                        if components.minute ?? 0 < routineStore.getTotalDuration() {
+                            timeStart = oldValue
+                            return
+                        }
                         routineStore.scheduleModel.maxDuration = components.minute ?? 0
                         routineStore.dataService.save()
-                        
                     }
                     
             }
@@ -93,14 +97,6 @@ public struct ScheduleCompView: View {
                 timeStart = calendar.date(byAdding: .minute,
                                          value: routineStore.scheduleModel.maxDuration,
                                          to: start) ?? start
-                
-                // for check activity duration
-                if routineStore.getTotalDuration() > routineStore.scheduleModel.maxDuration {
-                    print("You exceeded the maximum duration") // change this with alert or other action
-                } else if routineStore.getTotalDuration() <= routineStore.scheduleModel.maxDuration {
-                    print("still good") // only for testing
-                }
-
             }
         }
     }

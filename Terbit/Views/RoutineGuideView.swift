@@ -69,6 +69,7 @@ struct RoutineGuideView: View {
                     .foregroundStyle(.secondary)
                 }
                 .onAppear {
+                    print(selectedActivities.count, nextActivityIndex)
                     startTimer()
                     AudioServicesPlaySystemSound(1113) // audio effect
                 }
@@ -87,15 +88,6 @@ struct RoutineGuideView: View {
         .navigationTitle("Routine Guide")
         .navigationBarTitleDisplayMode(.inline)
     }
-}
-
-#Preview {
-    NavigationStack {
-        RoutineGuideView()
-            .environment(RoutineStore(dataService: .shared))
-            .environment(MyRoutineRouter())
-    }
-    
 }
 
 
@@ -119,12 +111,12 @@ struct ActivityGuideView: View {
     }
     
     func startTimer() {
-        currentStepDuration = routineStore.selectedActivities[currentActivityIndex].activity.instructionDurations[currentStepIndex]
+        currentStepDuration = routineStore.selectedActivities[currentActivityIndex].activity.durationsWithRepeatCount[currentStepIndex]
         totalStepDuration = currentStepDuration
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             if (currentStepDuration == 0) {
                 withAnimation {
-                    if (currentStepIndex + 1 == routineStore.selectedActivities[currentActivityIndex].activity.instructions.count) {
+                    if (currentStepIndex + 1 == routineStore.selectedActivities[currentActivityIndex].activity.instructionsWithRepeatCount.count) {
                         invalidateTimer()
                         isComplete = true
                         AudioServicesPlaySystemSound(1025) // Completed audio effect
@@ -135,7 +127,7 @@ struct ActivityGuideView: View {
                         )
                         routineStore.appendCompletedActivity(completedActivity: completedActivity)
                         
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6, execute: {
                             withAnimation {
                             if (currentActivityIndex + 1 ==
                                 routineStore.selectedActivities.count) {
@@ -149,7 +141,7 @@ struct ActivityGuideView: View {
                     } else {
                         AudioServicesPlaySystemSound(1113) // transition audio effect
                         currentStepIndex += 1
-                        currentStepDuration = routineStore.selectedActivities[currentActivityIndex].activity.instructionDurations[currentStepIndex]
+                        currentStepDuration = routineStore.selectedActivities[currentActivityIndex].activity.durationsWithRepeatCount[currentStepIndex]
                         totalStepDuration = currentStepDuration
                     }
                 }
@@ -168,14 +160,20 @@ struct ActivityGuideView: View {
                 .font(.title)
                 .bold()
             
-            Image(routineStore.selectedActivities[currentActivityIndex].activity.images[currentStepIndex])
-                .resizable()
-                .scaledToFit()
-                .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7)
-                .padding(.vertical, 48)
-            
+            if (routineStore.selectedActivities[currentActivityIndex].activity.title == "Mindful Breathing" ) {
+                BreathingGuideCompView(
+                    breathingStepIndex: $currentStepIndex
+                )
+                    .padding(.vertical, 48)
+            } else {
+                Image(routineStore.selectedActivities[currentActivityIndex].activity.imagesWithRepeatCount[currentStepIndex])
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7)
+                    .padding(.vertical, 80)
+            }
             VStack {
-                Text("\(routineStore.selectedActivities[currentActivityIndex].activity.instructions[currentStepIndex])...")
+                Text("\(routineStore.selectedActivities[currentActivityIndex].activity.instructionsWithRepeatCount[currentStepIndex])...")
                     .font(.title3)
                     .multilineTextAlignment(.center)
                 
@@ -191,8 +189,8 @@ struct ActivityGuideView: View {
                 .foregroundStyle(.secondary)
                 
                 HStack {
-                    ForEach(Array(routineStore.selectedActivities[currentActivityIndex].activity.instructions.enumerated()), id: \.1) {
-                        index, element in
+                    ForEach(Array(routineStore.selectedActivities[currentActivityIndex].activity.instructionsWithRepeatCount.indices), id: \.self) {
+                        index in
                         Capsule()
                             .foregroundStyle(
                                 index < currentStepIndex || isComplete ?
@@ -206,7 +204,7 @@ struct ActivityGuideView: View {
                 HStack {
                     Text("Step")
                     Spacer()
-                    Text("\(currentStepIndex)/\(routineStore.selectedActivities[currentActivityIndex].activity.instructions.count)")
+                    Text("\(currentStepIndex)/\(routineStore.selectedActivities[currentActivityIndex].activity.instructionsWithRepeatCount.count)")
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)

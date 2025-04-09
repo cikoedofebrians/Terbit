@@ -11,7 +11,7 @@ import SwiftUI
 enum BreathingState {
     case inhale
     case exhale
-    case hold
+    case hold(Bool)
     
     func getText() -> String {
         switch self {
@@ -19,7 +19,7 @@ enum BreathingState {
             return "Breathe in"
         case .exhale:
             return "Breathe out"
-        case .hold:
+        case .hold (let isInhale):
             return "Hold"
         }
     }
@@ -27,41 +27,26 @@ enum BreathingState {
 
 struct BreathingGuideCompView: View {
     @State var isScaled: Bool = false
-    @State var breathingState: BreathingState = .inhale
+    let breathingStates: [BreathingState] = [.inhale, .hold(true), .exhale, .hold(false)]
+    @State var breathingStateIndex: Int = 0
     
-    func startBreathingTimer() {
-        startBreathing()
-        Timer.scheduledTimer(withTimeInterval: 16, repeats: true) { timer in
-            startBreathing()
+    func moveToNextState() {
+        if breathingStateIndex < breathingStates.count - 1 {
+            breathingStateIndex += 1
+        } else {
+            breathingStateIndex = 0
         }
-    }
-    
-    func startBreathing() {
-        withAnimation {
-            breathingState = .inhale
-        }
-        withAnimation(.easeInOut(duration: 4)) {
-            isScaled = true
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-            withAnimation {
-                breathingState = .hold
+        switch breathingStates[breathingStateIndex] {
+        case .inhale:
+            withAnimation (.easeInOut(duration: 4)) {
+                isScaled = true
             }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
-            withAnimation {
-                breathingState = .exhale
-            }
-            withAnimation(.easeInOut(duration: 4)) {
+        case .hold(let _):
+        case .exhale:
+            withAnimation (.easeInOut(duration: 8)) {
                 isScaled = false
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 12) {
-            withAnimation {
-                breathingState = .hold
-            }
-        }
-
     }
     
     var body: some View {
@@ -70,13 +55,14 @@ struct BreathingGuideCompView: View {
             .frame(width: UIScreen.main.bounds.width * 0.5)
             .scaleEffect(isScaled ? 1.4 : 1)
             .overlay {
-                Text(breathingState.getText())
-                    .font(.title2)
+//                Text(breathingState.getText())
+//                    .font(.title2)
             }
             .onAppear {
-                startBreathingTimer()
+                //                startBreathingTimer()
             }
     }
+    
 }
 
 #Preview {

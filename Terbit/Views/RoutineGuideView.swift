@@ -13,7 +13,7 @@ struct RoutineGuideView: View {
     @Environment(MyRoutineRouter.self) var myRoutineRouter
     @Environment(RoutineStore.self) var routineStore
     
-    @State private var isGuidingActive = true
+    @State private var isGuidingActive = false
     @State private var timeRemaining = 5
     @State private var currentActivityIndex: Int = 0
     @State private var nextActivityIndex: Int = 0
@@ -158,12 +158,16 @@ struct ActivityGuideView: View {
                 .font(.title)
                 .bold()
             
-            Image(routineStore.selectedActivities[currentActivityIndex].activity.images[currentStepIndex])
-                .resizable()
-                .scaledToFit()
-                .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7)
-                .padding(.vertical, 48)
-            
+            if (routineStore.selectedActivities[currentActivityIndex].activity.title == "Mindful Breathing" ) {
+                BreathingGuideCompView()
+                    .padding(.vertical, 48)
+            } else {
+                Image(routineStore.selectedActivities[currentActivityIndex].activity.images[currentStepIndex])
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.width * 0.7)
+                    .padding(.vertical, 80)
+            }
             VStack {
                 Text("\(routineStore.selectedActivities[currentActivityIndex].activity.instructions[currentStepIndex])...")
                     .font(.title3)

@@ -25,12 +25,13 @@ public struct BeginRoutineCompView: View {
                 myRoutineRouter.push(.routineGuideView)
                 
             } label: {
-                Text(hasStartedToday ? "Nice work! Do it again tomorrow!" : "Begin Routine")
+                Text("Begin Routine")
+//                Text(hasStartedToday ? "Nice work! Do it again tomorrow!" : "Begin Routine")
             }
             .gesture(DragGesture(minimumDistance: 0))
             .listRowInsets(EdgeInsets())
             .buttonStyle(ListButtonStyle())
-            .disabled(routineStore.selectedActivities.isEmpty || hasStartedToday)
+            .disabled(routineStore.selectedActivities.isEmpty)
         }
         .listSectionSpacing(24)
     }

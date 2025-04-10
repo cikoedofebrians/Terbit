@@ -78,7 +78,7 @@ let constantMorningRoutine: [ActivityModel] = [
           duration: 3,
           logoImage: "figure.walk",
           images: ["Walk"],
-          instructionDurations: [180],
+          instructionDurations: [5],
           detailsImage: "DetailsWalk"
       )
 ]

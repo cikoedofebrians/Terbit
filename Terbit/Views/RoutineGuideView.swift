@@ -71,6 +71,7 @@ struct RoutineGuideView: View {
                     .foregroundStyle(.secondary)
                 }
                 .onAppear {
+                    startTimer()
                     AudioServicesPlaySystemSound(1113) // audio effect
                 }
                 .onDisappear {
